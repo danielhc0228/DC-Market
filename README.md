@@ -13,6 +13,8 @@ As this project progresses towards the end, I'll be very comfortable using Next.
 
 I had no knowledge of Tailwind CSS but through this project, I was able to understand and learn how to use Tailwind CSS. My beginning commits of this github repo was about me learning Tailwind CSS.
 
+Concept of Modifiers and Responsive Modifiers blew my mind.
+
 ### TypeScript & React
 
 TypeScript and React has been used for most of my projects in my github repositories.
