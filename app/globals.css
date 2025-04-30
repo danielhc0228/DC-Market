@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
-@layer utilities {
-    .mt-tomato {
-      margin-top: 120px;
-    }
-    .rounded-sexy-name {
-      border-radius: 11.11px;
-    }
+.select2-dropdown {
+    @apply rounded-b-lg shadow-md;
   }
+
+  .select2-search {
+    @apply rounded border border-gray-800;
+  }
+  
