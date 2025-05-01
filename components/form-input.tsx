@@ -9,7 +9,7 @@ export default function FormInput({ type, placeholder, required, errors }: FormI
     return (
         <div className="flex flex-col gap-2">
             <input
-                className="h-10 w-full rounded-md border-none bg-transparent pl-5 ring-2 ring-neutral-200 transition placeholder:text-neutral-400 focus:ring-4 focus:ring-orange-500 focus:outline-none"
+                className="h-10 w-full rounded-md border-none bg-transparent pl-5 ring-2 ring-neutral-200 transition placeholder:text-neutral-400 focus:ring-3 focus:ring-orange-500 focus:outline-none"
                 type={type}
                 placeholder={placeholder}
                 required={required}
