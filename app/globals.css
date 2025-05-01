@@ -1,10 +1,8 @@
 @import "tailwindcss";
+@import "tailwindcss/preflight";
 
-.select2-dropdown {
-    @apply rounded-b-lg shadow-md;
-  }
-
-  .select2-search {
-    @apply rounded border border-gray-800;
-  }
-  
+@layer base {
+    a {
+        @apply text-orange-500;
+    }
+}
