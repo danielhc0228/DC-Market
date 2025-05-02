@@ -17,14 +17,14 @@ const formSchema = z
         username: z
             .string({
                 invalid_type_error: "Username must be a string!",
-                required_error: "Where is my username???",
+                required_error: "Username is required",
             })
-            .min(3, "Way too short!!!")
-            // .max(10, "That is too looooong!")
+            .min(3, "Too short")
+            .max(10, "Too long")
             .trim()
             .toLowerCase()
-            .transform((username) => `🔥 ${username}`)
-            .refine((username) => !username.includes("potato"), "No potatoes allowed!"),
+            .transform((username) => `🔥 ${username}`) //change what's being typed to the formatted word
+            .refine((username) => !username.includes("potato"), "No potatoes allowed!"), //restrict certain words to be contained
         email: z.string().email().toLowerCase(),
         password: z
             .string()
