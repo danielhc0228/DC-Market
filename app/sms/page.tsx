@@ -1,5 +1,6 @@
 import Button from "@/components/button";
 import Input from "@/components/input";
+import { smsVerification } from "./actions";
 
 export default function SMSLogin() {
     return (
