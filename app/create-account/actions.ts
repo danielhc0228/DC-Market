@@ -20,7 +20,7 @@ const formSchema = z
             })
             .trim()
             .toLowerCase()
-            .transform((username) => `🔥 ${username}`) //change what's being typed to the formatted word
+            .transform((username) => `🔥 ${username}`) //change what's being typed to the formatted value. Changes value
             .refine((username) => !username.includes("potato"), "No potatoes allowed!"), //restrict certain words to be contained
         email: z.string().email().toLowerCase(),
         password: z.string().min(PASSWORD_MIN_LENGTH).regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
