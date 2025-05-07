@@ -1,8 +1,11 @@
 "use server";
 import { z } from "zod";
-import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "@/lib/constants";
+import { PASSWORD_MIN_LENGTH /**PASSWORD_REGEX, PASSWORD_REGEX_ERROR**/ } from "@/lib/constants";
 import db from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
 
 const checkPasswords = ({
     password,
@@ -97,6 +100,15 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         });
         console.log(user);
         // log the user in
-        // redirect "/home"
+        const cookie = await getIronSession(await cookies(), {
+            cookieName: "delicious-karrot",
+            password: process.env.COOKIE_PASSWORD!,
+        });
+        //   @ts-expect-error object is not available yet.
+        cookie.id = user.id;
+        await cookie.save();
+
+        // redirect "/profile"
+        redirect("/profile");
     }
 }
