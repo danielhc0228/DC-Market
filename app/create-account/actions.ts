@@ -2,14 +2,15 @@
 import { z } from "zod";
 import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "@/lib/constants";
 import db from "@/lib/db";
+import bcrypt from "bcryptjs";
 
 const checkPasswords = ({
     password,
-    confirmPassword,
+    confirm_password,
 }: {
     password: string;
-    confirmPassword: string;
-}) => password === confirmPassword;
+    confirm_password: string;
+}) => password === confirm_password;
 
 const checkUniqueUsername = async (username: string) => {
     const user = await db.user.findUnique({
@@ -62,12 +63,12 @@ const formSchema = z
             .email()
             .toLowerCase()
             .refine(checkUniqueEmail, "There is an account already registered with that email."),
-        password: z.string().min(PASSWORD_MIN_LENGTH).regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
-        confirmPassword: z.string().min(PASSWORD_MIN_LENGTH),
+        password: z.string().min(PASSWORD_MIN_LENGTH), //.regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
+        confirm_password: z.string().min(PASSWORD_MIN_LENGTH),
     })
     .refine(checkPasswords, {
         message: "Both passwords should be the same!",
-        path: ["confirmPassword"],
+        path: ["confirm_password"],
     });
 
 export async function createAccount(prevState: unknown, formData: FormData) {
@@ -82,7 +83,19 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         return result.error.flatten();
     } else {
         // hash password
+        const hashedPassword = await bcrypt.hash(result.data.password, 12);
         // save the user to db
+        const user = await db.user.create({
+            data: {
+                username: result.data.username,
+                email: result.data.email,
+                password: hashedPassword,
+            },
+            select: {
+                id: true,
+            },
+        });
+        console.log(user);
         // log the user in
         // redirect "/home"
     }
