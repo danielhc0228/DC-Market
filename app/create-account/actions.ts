@@ -1,6 +1,7 @@
 "use server";
 import { z } from "zod";
 import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "@/lib/constants";
+import db from "@/lib/db";
 
 const checkPasswords = ({
     password,
@@ -10,7 +11,40 @@ const checkPasswords = ({
     confirmPassword: string;
 }) => password === confirmPassword;
 
+const checkUniqueUsername = async (username: string) => {
+    const user = await db.user.findUnique({
+        where: {
+            username,
+        },
+        select: {
+            // select only brings given parameter.
+            id: true,
+        },
+    });
+    // if (user) {
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+    return !Boolean(user);
+};
+
+const checkUniqueEmail = async (email: string) => {
+    const user = await db.user.findUnique({
+        where: {
+            email,
+        },
+        select: {
+            id: true,
+        },
+    });
+    return Boolean(user) === false;
+};
+
 // const usernameSchema = z.string().min(5).max(10); // username must be a string of 5 letters minimum and 10 letters maximum.
+
+const checkUsername = (username: string) => !username.includes("potato");
+
 const formSchema = z
     .object({
         username: z
@@ -20,9 +54,14 @@ const formSchema = z
             })
             .trim()
             .toLowerCase()
-            .transform((username) => `🔥 ${username}`) //change what's being typed to the formatted value. Changes value
-            .refine((username) => !username.includes("potato"), "No potatoes allowed!"), //restrict certain words to be contained
-        email: z.string().email().toLowerCase(),
+            //.transform((username) => `🔥 ${username}`) //change what's being typed to the formatted value. Changes value
+            .refine(checkUsername, "No potatoes allowed!") //restrict certain words to be contained
+            .refine(checkUniqueUsername, "This username is already taken"),
+        email: z
+            .string()
+            .email()
+            .toLowerCase()
+            .refine(checkUniqueEmail, "There is an account already registered with that email."),
         password: z.string().min(PASSWORD_MIN_LENGTH).regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
         confirmPassword: z.string().min(PASSWORD_MIN_LENGTH),
     })
@@ -38,8 +77,13 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         password: formData.get("password"),
         confirm_password: formData.get("confirm_password"),
     };
-    const result = formSchema.safeParse(data);
+    const result = await formSchema.safeParseAsync(data);
     if (!result.success) {
         return result.error.flatten();
+    } else {
+        // hash password
+        // save the user to db
+        // log the user in
+        // redirect "/home"
     }
 }
