@@ -4,8 +4,7 @@ import { PASSWORD_MIN_LENGTH /**PASSWORD_REGEX, PASSWORD_REGEX_ERROR**/ } from "
 import db from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
+import getSession from "@/lib/session";
 
 const checkPasswords = ({
     password,
@@ -81,7 +80,7 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         password: formData.get("password"),
         confirm_password: formData.get("confirm_password"),
     };
-    const result = await formSchema.safeParseAsync(data);
+    const result = await formSchema.safeParseAsync(data); // or .spa
     if (!result.success) {
         return result.error.flatten();
     } else {
@@ -100,13 +99,9 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         });
         console.log(user);
         // log the user in
-        const cookie = await getIronSession(await cookies(), {
-            cookieName: "delicious-karrot",
-            password: process.env.COOKIE_PASSWORD!,
-        });
-        //   @ts-expect-error object is not available yet.
-        cookie.id = user.id;
-        await cookie.save();
+        const session = await getSession();
+        session.id = user.id;
+        await session.save();
 
         // redirect "/profile"
         redirect("/profile");
