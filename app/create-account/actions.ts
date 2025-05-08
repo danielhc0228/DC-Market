@@ -14,36 +14,6 @@ const checkPasswords = ({
     confirm_password: string;
 }) => password === confirm_password;
 
-const checkUniqueUsername = async (username: string) => {
-    const user = await db.user.findUnique({
-        where: {
-            username,
-        },
-        select: {
-            // select only brings given parameter.
-            id: true,
-        },
-    });
-    // if (user) {
-    //   return false;
-    // } else {
-    //   return true;
-    // }
-    return !Boolean(user);
-};
-
-const checkUniqueEmail = async (email: string) => {
-    const user = await db.user.findUnique({
-        where: {
-            email,
-        },
-        select: {
-            id: true,
-        },
-    });
-    return Boolean(user) === false;
-};
-
 // const usernameSchema = z.string().min(5).max(10); // username must be a string of 5 letters minimum and 10 letters maximum.
 
 const checkUsername = (username: string) => !username.includes("potato");
@@ -58,15 +28,49 @@ const formSchema = z
             .trim()
             .toLowerCase()
             //.transform((username) => `🔥 ${username}`) //change what's being typed to the formatted value. Changes value
-            .refine(checkUsername, "No potatoes allowed!") //restrict certain words to be contained
-            .refine(checkUniqueUsername, "This username is already taken"),
-        email: z
-            .string()
-            .email()
-            .toLowerCase()
-            .refine(checkUniqueEmail, "There is an account already registered with that email."),
+            .refine(checkUsername, "No potatoes allowed!"), //restrict certain words to be contained
+        email: z.string().email().toLowerCase(),
         password: z.string().min(PASSWORD_MIN_LENGTH), //.regex(PASSWORD_REGEX, PASSWORD_REGEX_ERROR),
         confirm_password: z.string().min(PASSWORD_MIN_LENGTH),
+    })
+    .superRefine(async ({ username }, ctx) => {
+        //superRefine() does not start validating other fields if this field is not validated.
+        const user = await db.user.findUnique({
+            where: {
+                username,
+            },
+            select: {
+                id: true,
+            },
+        });
+        if (user) {
+            ctx.addIssue({
+                code: "custom", //different custom code errors are available
+                message: "This username is already taken",
+                path: ["username"],
+                fatal: true,
+            });
+            return z.NEVER;
+        }
+    })
+    .superRefine(async ({ email }, ctx) => {
+        const user = await db.user.findUnique({
+            where: {
+                email,
+            },
+            select: {
+                id: true,
+            },
+        });
+        if (user) {
+            ctx.addIssue({
+                code: "custom",
+                message: "This email is already taken",
+                path: ["email"],
+                fatal: true,
+            });
+            return z.NEVER;
+        }
     })
     .refine(checkPasswords, {
         message: "Both passwords should be the same!",
