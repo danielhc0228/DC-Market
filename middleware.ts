@@ -10,6 +10,8 @@ const publicOnlyUrls: Routes = {
     "/login": true,
     "/sms": true,
     "/create-account": true,
+    "/github/start": true,
+    "/github/complete": true,
 };
 
 // const publicUrls = new Set(['/', '/login', '/sms', '/create-account']); // Set is a good option too
