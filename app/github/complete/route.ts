@@ -1,7 +1,11 @@
 import db from "@/lib/db";
+import {
+    getAccessTokenResponse,
+    getUserEmailResponse,
+    getUserProfileResponse,
+} from "@/lib/github/getGitHubResponse";
 import LogUserIn from "@/lib/login";
-// import getSession from "@/lib/session";
-import { notFound /**redirect**/ } from "next/navigation";
+import { notFound } from "next/navigation";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -9,44 +13,16 @@ export async function GET(request: NextRequest) {
     if (!code) {
         return notFound();
     }
-    const accessTokenParams = new URLSearchParams({
-        client_id: process.env.GITHUB_CLIENT_ID!,
-        client_secret: process.env.GITHUB_CLIENT_SECRET!,
-        code,
-    }).toString();
 
-    console.log(accessTokenParams);
+    const { error, access_token } = await getAccessTokenResponse(code);
 
-    const accessTokenURL = `https://github.com/login/oauth/access_token?${accessTokenParams}`;
-
-    const accessTokenResponse = await fetch(accessTokenURL, {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-        },
-    });
-
-    const { error, access_token } = await accessTokenResponse.json();
     if (error) {
         return new Response(null, {
             status: 400,
         });
     }
-    const userProfileResponse = await fetch("https://api.github.com/user", {
-        headers: {
-            Authorization: `Bearer ${access_token}`,
-        },
-    });
 
-    const userEmailResponse = await fetch("https://api.github.com/user/emails", {
-        headers: {
-            Authorization: `Bearer ${access_token}`,
-        },
-    });
-
-    const { email } = await userEmailResponse.json();
-
-    const { id, avatar_url, login } = await userProfileResponse.json();
+    const { email } = await getUserEmailResponse(access_token);
 
     // check for emails
     const findEmail = await db.user.findUnique({
@@ -64,6 +40,8 @@ export async function GET(request: NextRequest) {
         });
     }
 
+    const { id, avatar_url, githubUsername } = await getUserProfileResponse(access_token);
+
     // Uses github id to find existing user
     const user = await db.user.findUnique({
         where: {
@@ -75,27 +53,23 @@ export async function GET(request: NextRequest) {
     });
     if (user) {
         // if the user is already exists in the database, log in.
-        // const session = await getSession();
-        // session.id = user.id;
-        // await session.save();
-        // return redirect("/profile");
         LogUserIn(user.id);
     }
 
-    // check for username
+    // if user is not in the database, check for username
     const username = await db.user.findUnique({
         where: {
-            username: login,
+            username: githubUsername,
         },
         select: {
             id: true,
         },
     });
 
+    // if the user does not exist in the database, create new user and redirect to the profile page.
     const newUser = await db.user.create({
-        // if the user does not exist in the database, create new user and redirect to the profile page.
         data: {
-            username: username ? `${login + Date.now()}` : login,
+            username: username ? `${githubUsername + Date.now()}` : githubUsername,
             github_id: id + "",
             avatar: avatar_url,
             email,
@@ -104,9 +78,7 @@ export async function GET(request: NextRequest) {
             id: true,
         },
     });
-    // const session = await getSession();
-    // session.id = newUser.id;
-    // await session.save();
-    // return redirect("/profile");
+
+    // once the user has been created in the database, log user in.
     LogUserIn(newUser.id);
 }
