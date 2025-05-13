@@ -2,7 +2,7 @@ import db from "@/lib/db";
 import LogUserIn from "@/lib/login";
 // import getSession from "@/lib/session";
 import { notFound /**redirect**/ } from "next/navigation";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     const code = request.nextUrl.searchParams.get("code"); // gets code generated from connecting to github
@@ -38,7 +38,31 @@ export async function GET(request: NextRequest) {
         },
     });
 
+    const userEmailResponse = await fetch("https://api.github.com/user/emails", {
+        headers: {
+            Authorization: `Bearer ${access_token}`,
+        },
+    });
+
+    const { email } = await userEmailResponse.json();
+
     const { id, avatar_url, login } = await userProfileResponse.json();
+
+    // check for emails
+    const findEmail = await db.user.findUnique({
+        where: {
+            email: email,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (findEmail) {
+        return new NextResponse("Email is already in use.", {
+            status: 400,
+        });
+    }
 
     // Uses github id to find existing user
     const user = await db.user.findUnique({
@@ -74,6 +98,7 @@ export async function GET(request: NextRequest) {
             username: username ? `${login + Date.now()}` : login,
             github_id: id + "",
             avatar: avatar_url,
+            email,
         },
         select: {
             id: true,
