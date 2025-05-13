@@ -2,9 +2,10 @@
 
 // import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, PASSWORD_REGEX_ERROR } from "@/lib/constants";
 import db from "@/lib/db";
-import getSession from "@/lib/session";
+import LogUserIn from "@/lib/login";
 import bcrypt from "bcryptjs";
-import { redirect } from "next/navigation";
+// import getSession from "@/lib/session";
+// import { redirect } from "next/navigation";
 import { z } from "zod";
 
 const checkEmailExists = async (email: string) => {
@@ -57,10 +58,11 @@ export async function logIn(prevState: unknown, formData: FormData) {
         });
         const ok = await bcrypt.compare(result.data.password, user!.password ?? "xxxx");
         if (ok) {
-            const session = await getSession();
-            session.id = user!.id;
-            await session.save();
-            redirect("/profile");
+            // const session = await getSession();
+            // session.id = user!.id;
+            // await session.save();
+            // redirect("/profile");
+            LogUserIn(user!.id);
         } else {
             return {
                 fieldErrors: {

@@ -3,8 +3,9 @@ import { z } from "zod";
 import { PASSWORD_MIN_LENGTH /**PASSWORD_REGEX, PASSWORD_REGEX_ERROR**/ } from "@/lib/constants";
 import db from "@/lib/db";
 import bcrypt from "bcryptjs";
-import { redirect } from "next/navigation";
-import getSession from "@/lib/session";
+// import { redirect } from "next/navigation";
+// import getSession from "@/lib/session";
+import LogUserIn from "@/lib/login";
 
 const checkPasswords = ({
     password,
@@ -103,11 +104,12 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         });
         console.log(user);
         // log the user in
-        const session = await getSession();
-        session.id = user.id;
-        await session.save();
+        // const session = await getSession();
+        // session.id = user.id;
+        // await session.save();
 
-        // redirect "/profile"
-        redirect("/profile");
+        // // redirect "/profile"
+        // redirect("/profile");
+        LogUserIn(user.id);
     }
 }

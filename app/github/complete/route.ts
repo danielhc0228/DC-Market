@@ -1,6 +1,7 @@
 import db from "@/lib/db";
-import getSession from "@/lib/session";
-import { notFound, redirect } from "next/navigation";
+import LogUserIn from "@/lib/login";
+// import getSession from "@/lib/session";
+import { notFound /**redirect**/ } from "next/navigation";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -48,12 +49,15 @@ export async function GET(request: NextRequest) {
         },
     });
     if (user) {
-        const session = await getSession();
-        session.id = user.id;
-        await session.save();
-        return redirect("/profile");
+        // if the user is already exists in the database, log in.
+        // const session = await getSession();
+        // session.id = user.id;
+        // await session.save();
+        // return redirect("/profile");
+        LogUserIn(user.id);
     }
     const newUser = await db.user.create({
+        // if the user does not exist in the database, create new user and redirect to the profile page.
         data: {
             username: login,
             github_id: id + "",
@@ -63,8 +67,9 @@ export async function GET(request: NextRequest) {
             id: true,
         },
     });
-    const session = await getSession();
-    session.id = newUser.id;
-    await session.save();
-    return redirect("/profile");
+    // const session = await getSession();
+    // session.id = newUser.id;
+    // await session.save();
+    // return redirect("/profile");
+    LogUserIn(newUser.id);
 }
