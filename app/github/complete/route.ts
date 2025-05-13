@@ -40,6 +40,7 @@ export async function GET(request: NextRequest) {
 
     const { id, avatar_url, login } = await userProfileResponse.json();
 
+    // Uses github id to find existing user
     const user = await db.user.findUnique({
         where: {
             github_id: id + "",
@@ -56,10 +57,21 @@ export async function GET(request: NextRequest) {
         // return redirect("/profile");
         LogUserIn(user.id);
     }
+
+    // check for username
+    const username = await db.user.findUnique({
+        where: {
+            username: login,
+        },
+        select: {
+            id: true,
+        },
+    });
+
     const newUser = await db.user.create({
         // if the user does not exist in the database, create new user and redirect to the profile page.
         data: {
-            username: login,
+            username: username ? `${login + Date.now()}` : login,
             github_id: id + "",
             avatar: avatar_url,
         },
