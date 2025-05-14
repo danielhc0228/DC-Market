@@ -50,6 +50,38 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
                 error: result.error.flatten(),
             };
         } else {
+            // delete all token related to the phone number previously
+            await db.sMSToken.deleteMany({
+                where: {
+                    user: {
+                        phone: result.data,
+                    },
+                },
+            });
+            // create new token
+            const token = await getToken();
+            await db.sMSToken.create({
+                data: {
+                    token,
+                    user: {
+                        connectOrCreate: {
+                            // connects if there is existing user or create new user and connect
+                            where: {
+                                phone: result.data,
+                            },
+                            create: {
+                                username: crypto.randomBytes(10).toString("hex"), // random 10 hex digit as a username.
+                                phone: result.data,
+                            },
+                        },
+                    },
+                },
+            });
+
+            /** ...
+             * send the token using twilio
+             * ... */
+
             //else set token to true
             return {
                 token: true,
