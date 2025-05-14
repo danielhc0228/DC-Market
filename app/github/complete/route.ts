@@ -6,7 +6,7 @@ import {
 } from "@/lib/github/getGitHubResponse";
 import LogUserIn from "@/lib/login";
 import { notFound } from "next/navigation";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const code = request.nextUrl.searchParams.get("code"); // gets code generated from connecting to github
@@ -22,7 +22,8 @@ export async function GET(request: NextRequest) {
         });
     }
 
-    const { email } = await getUserEmailResponse(access_token);
+    const emails = await getUserEmailResponse(access_token);
+    const { email } = emails[0];
 
     // check for emails
     const findEmail = await db.user.findUnique({
@@ -34,13 +35,7 @@ export async function GET(request: NextRequest) {
         },
     });
 
-    if (findEmail) {
-        return new NextResponse("Email is already in use.", {
-            status: 400,
-        });
-    }
-
-    const { id, avatar_url, githubUsername } = await getUserProfileResponse(access_token);
+    const { id, avatar_url, login } = await getUserProfileResponse(access_token);
 
     // Uses github id to find existing user
     const user = await db.user.findUnique({
@@ -53,13 +48,13 @@ export async function GET(request: NextRequest) {
     });
     if (user) {
         // if the user is already exists in the database, log in.
-        LogUserIn(user.id);
+        return LogUserIn(user.id);
     }
 
     // if user is not in the database, check for username
     const username = await db.user.findUnique({
         where: {
-            username: githubUsername,
+            username: login,
         },
         select: {
             id: true,
@@ -69,10 +64,10 @@ export async function GET(request: NextRequest) {
     // if the user does not exist in the database, create new user and redirect to the profile page.
     const newUser = await db.user.create({
         data: {
-            username: username ? `${githubUsername + Date.now()}` : githubUsername,
+            username: username ? `${login + Date.now()}` : login,
             github_id: id + "",
             avatar: avatar_url,
-            email,
+            email: findEmail ? `${email + "github"}` : email,
         },
         select: {
             id: true,
@@ -80,5 +75,5 @@ export async function GET(request: NextRequest) {
     });
 
     // once the user has been created in the database, log user in.
-    LogUserIn(newUser.id);
+    return LogUserIn(newUser.id);
 }

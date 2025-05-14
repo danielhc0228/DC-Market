@@ -104,12 +104,6 @@ export async function createAccount(prevState: unknown, formData: FormData) {
         });
         console.log(user);
         // log the user in
-        // const session = await getSession();
-        // session.id = user.id;
-        // await session.save();
-
-        // // redirect "/profile"
-        // redirect("/profile");
-        LogUserIn(user.id);
+        return LogUserIn(user.id);
     }
 }

@@ -62,7 +62,7 @@ export async function logIn(prevState: unknown, formData: FormData) {
             // session.id = user!.id;
             // await session.save();
             // redirect("/profile");
-            LogUserIn(user!.id);
+            return LogUserIn(user!.id);
         } else {
             return {
                 fieldErrors: {
