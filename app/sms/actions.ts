@@ -3,6 +3,8 @@
 import { z } from "zod";
 import validator from "validator";
 import { redirect } from "next/navigation";
+import crypto from "crypto";
+import db from "@/lib/db";
 
 const phoneSchema = z
     .string()
@@ -16,6 +18,23 @@ const tokenSchema = z.coerce.number().min(100000).max(999999); // token is strin
 
 interface ActionState {
     token: boolean;
+}
+
+async function getToken() {
+    const token = crypto.randomInt(100000, 999999).toString();
+    const exists = await db.sMSToken.findUnique({
+        where: {
+            token,
+        },
+        select: {
+            id: true,
+        },
+    });
+    if (exists) {
+        return getToken();
+    } else {
+        return token;
+    }
 }
 
 export async function smsLogIn(prevState: ActionState, formData: FormData) {

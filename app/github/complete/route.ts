@@ -5,13 +5,14 @@ import {
     getUserProfileResponse,
 } from "@/lib/github/getGitHubResponse";
 import LogUserIn from "@/lib/login";
-import { notFound } from "next/navigation";
 import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
     const code = request.nextUrl.searchParams.get("code"); // gets code generated from connecting to github
     if (!code) {
-        return notFound();
+        return new Response(null, {
+            status: 400,
+        });
     }
 
     const { error, access_token } = await getAccessTokenResponse(code);
