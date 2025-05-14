@@ -5,6 +5,7 @@ import validator from "validator";
 import { redirect } from "next/navigation";
 import crypto from "crypto";
 import db from "@/lib/db";
+import getSession from "@/lib/session";
 
 const phoneSchema = z
     .string()
@@ -14,7 +15,11 @@ const phoneSchema = z
         "Wrong phone format",
     );
 
-const tokenSchema = z.coerce.number().min(100000).max(999999); // token is string initially but 'coerce' forces type conversion to number.
+const tokenSchema = z.coerce // token is string initially but 'coerce' forces type conversion to number.
+    .number()
+    .min(100000)
+    .max(999999)
+    .refine(tokenExists, "This token does not exist."); // tokenExists is async function, so this requires await when used. see line 109.
 
 interface ActionState {
     token: boolean;
@@ -35,6 +40,18 @@ async function getToken() {
     } else {
         return token;
     }
+}
+
+async function tokenExists(token: number) {
+    const exists = await db.sMSToken.findUnique({
+        where: {
+            token: token.toString(),
+        },
+        select: {
+            id: true,
+        },
+    });
+    return Boolean(exists);
 }
 
 export async function smsLogIn(prevState: ActionState, formData: FormData) {
@@ -89,7 +106,7 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
         }
     } else {
         // this code is run when the button is clicked again but this time token is set to true so it can be run.
-        const result = tokenSchema.safeParse(token);
+        const result = await tokenSchema.spa(token);
         if (!result.success) {
             //show error when verification code is incorrect
             return {
@@ -97,7 +114,26 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
                 error: result.error.flatten(),
             };
         } else {
-            redirect("/"); //redirect to home screen if verfication code is correct
+            // if verification is correct, find the associated user id then match with session id to log in.
+            const token = await db.sMSToken.findUnique({
+                where: {
+                    token: result.data.toString(),
+                },
+                select: {
+                    id: true,
+                    userId: true,
+                },
+            });
+            const session = await getSession();
+            session.id = token!.userId;
+            await session.save();
+            await db.sMSToken.delete({
+                //delete sms token as no longer needed
+                where: {
+                    id: token!.id,
+                },
+            });
+            redirect("/profile"); //redirect to home screen if verfication code is correct
         }
     }
 }
