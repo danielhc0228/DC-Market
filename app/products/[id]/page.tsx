@@ -1,3 +1,4 @@
+import DeleteButton from "@/app/products/[id]/DeleteButton";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToWon } from "@/lib/utils";
@@ -32,10 +33,11 @@ async function getProduct(id: number) {
 }
 
 interface ProductDetailProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
-export default async function ProductDetail({ params }: ProductDetailProps) {
+export default async function ProductDetail(props: ProductDetailProps) {
+    const params = await props.params;
     const id = Number(params.id);
 
     // if id is not number or not found in the db, lead to 404 page.
@@ -76,16 +78,15 @@ export default async function ProductDetail({ params }: ProductDetailProps) {
             <div className="fixed bottom-0 left-0 flex w-full items-center justify-between bg-neutral-800 p-5 pb-10">
                 <span className="text-xl font-semibold">${formatToWon(product.price)}</span>
                 {isOwner ? (
-                    <button className="rounded-md bg-red-500 px-5 py-2.5 font-semibold text-white">
-                        Delete product
-                    </button>
-                ) : null}
-                <Link
-                    className="rounded-md bg-orange-500 px-5 py-2.5 font-semibold text-white"
-                    href={``}
-                >
-                    채팅하기
-                </Link>
+                    <DeleteButton id={id} />
+                ) : (
+                    <Link
+                        className="rounded-md bg-orange-500 px-5 py-2.5 font-semibold text-white"
+                        href={``}
+                    >
+                        Chat
+                    </Link>
+                )}
             </div>
         </div>
     );
