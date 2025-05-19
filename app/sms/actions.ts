@@ -95,9 +95,15 @@ export async function smsLogIn(prevState: ActionState, formData: FormData) {
                 },
             });
 
-            /** ...
-             * send the token using twilio
-             * ... */
+            // following sends sms message to your phone number from Twilio. Monthly fee required so not implementing it now.
+            // install twilio and add relevant info to env file for the following code to work.
+            //
+            // const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+            // await client.messages.create({
+            //     body: `Your Karrot verification code is: ${token}`,
+            //     from: process.env.TWILIO_PHONE_NUMBER!,
+            //     to: process.env.MY_PHONE_NUMBER!,
+            // });
 
             //else set token to true
             return {
