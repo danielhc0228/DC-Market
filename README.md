@@ -18,3 +18,44 @@ Concept of Modifiers and Responsive Modifiers blew my mind.
 ### TypeScript & React
 
 TypeScript and React has been used for most of my projects in my github repositories.
+
+## Implemented Features
+
+### Infinite Scrolling
+
+Users can scroll product pages to see products infinitely unless all the listed items are displayed to the screen.
+
+Whenever the span element that says "Load More" is shown to the screen, useEffect is triggered and runs getMoreProduct function which loads more products from the database and display it to the screen.
+
+````const trigger = useRef<HTMLSpanElement>(null); // connects span element
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            async (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+                const element = entries[0];
+                if (element.isIntersecting && trigger.current) {
+                    // if span element can be seen, stop observe and load more products.
+                    observer.unobserve(trigger.current);
+                    setIsLoading(true);
+                    const newProducts = await getMoreProducts(page + 1);
+                    if (newProducts.length !== 0) {
+                        setPage((prev) => prev + 1);
+                        setProducts((prev) => [...prev, ...newProducts]);
+                    } else {
+                        setIsLastPage(true);
+                    }
+                    setIsLoading(false);
+                }
+            },
+            {
+                threshold: 1.0,
+            },
+        );
+        if (trigger.current) {
+            observer.observe(trigger.current);
+        }
+        return () => {
+            // clean up function
+            observer.disconnect();
+        };
+    }, [page]); //observing begins everytime page value is changed, this allows infinite scrolling```
+````
