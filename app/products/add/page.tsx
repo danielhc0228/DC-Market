@@ -7,16 +7,35 @@ import { useState } from "react";
 
 export default function AddProduct() {
     const [preview, setPreview] = useState("");
-    const onImageChange = () => {};
+
+    // Create img url when an image is uploaded
+    const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const {
+            target: { files },
+        } = event;
+        if (!files) {
+            return;
+        }
+        const file = files[0];
+        const url = URL.createObjectURL(file);
+        setPreview(url);
+    };
     return (
         <div>
             <form className="flex flex-col gap-5 p-5">
                 <label
                     htmlFor="photo"
-                    className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-neutral-300 text-neutral-300"
+                    className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-neutral-300 bg-cover bg-center text-neutral-300"
+                    style={{
+                        backgroundImage: `url(${preview})`,
+                    }}
                 >
-                    <PhotoIcon className="w-20" />
-                    <div className="text-sm text-neutral-400">사진을 추가해주세요.</div>
+                    {preview === "" ? (
+                        <>
+                            <PhotoIcon className="w-20" />
+                            <div className="text-sm text-neutral-400">사진을 추가해주세요.</div>
+                        </>
+                    ) : null}
                 </label>
                 <input
                     onChange={onImageChange}
