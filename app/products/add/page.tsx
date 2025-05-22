@@ -3,8 +3,9 @@
 import Button from "@/components/button";
 import Input from "@/components/input";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { z } from "zod";
+import { uploadProduct } from "./actions";
 
 const fileSchema = z.object({
     // checks whether the uploaded file is image file
@@ -48,9 +49,12 @@ export default function AddProduct() {
         const url = URL.createObjectURL(file);
         setPreview(url);
     };
+
+    // Retrieves error from uploadProduct and sends product data to uploadProduct
+    const [state, action] = useActionState(uploadProduct, null);
     return (
         <div>
-            <form className="flex flex-col gap-5 p-5">
+            <form action={action} className="flex flex-col gap-5 p-5">
                 <label
                     htmlFor="photo"
                     className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border-2 border-dashed border-neutral-300 bg-cover bg-center text-neutral-300"
@@ -73,9 +77,27 @@ export default function AddProduct() {
                     accept="image/*"
                     className="hidden"
                 />
-                <Input name="title" required placeholder="제목" type="text" />
-                <Input name="price" type="number" required placeholder="가격" />
-                <Input name="description" type="text" required placeholder="자세한 설명" />
+                <Input
+                    name="title"
+                    required
+                    placeholder="제목"
+                    type="text"
+                    errors={state?.fieldErrors.title}
+                />
+                <Input
+                    name="price"
+                    type="number"
+                    required
+                    placeholder="가격"
+                    errors={state?.fieldErrors.price}
+                />
+                <Input
+                    name="description"
+                    type="text"
+                    required
+                    placeholder="자세한 설명"
+                    errors={state?.fieldErrors.description}
+                />
                 <Button text="작성 완료" />
             </form>
         </div>
