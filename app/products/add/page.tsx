@@ -4,6 +4,24 @@ import Button from "@/components/button";
 import Input from "@/components/input";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useState } from "react";
+import { z } from "zod";
+
+const fileSchema = z.object({
+    // checks whether the uploaded file is image file
+    type: z.string().refine((value) => value.startsWith("image/"), {
+        message: "Only image files can be uploaded",
+    }),
+
+    // checks whether the uploaded file is exceeding 3MB
+    size: z.number().refine((value) => value <= 3 * 1024 * 1024, {
+        message: "Size must be less than 3MB",
+    }),
+
+    // Or this:
+    // size: z.number().max(1024 * 1024 * 3, {
+    //     message: "Size must be less than 3MB",
+    // }),
+});
 
 export default function AddProduct() {
     const [preview, setPreview] = useState("");
@@ -17,6 +35,16 @@ export default function AddProduct() {
             return;
         }
         const file = files[0];
+
+        // checks if the uploaded file passes the requirement, throw error otherwise.
+        const result = fileSchema.safeParse(file);
+        if (!result.success) {
+            alert(
+                result.error.flatten().fieldErrors.type || result.error.flatten().fieldErrors.size,
+            );
+            return;
+        }
+
         const url = URL.createObjectURL(file);
         setPreview(url);
     };
