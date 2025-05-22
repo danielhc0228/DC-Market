@@ -2,7 +2,7 @@ import DeleteButton from "@/app/products/[id]/DeleteButton";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToWon } from "@/lib/utils";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -88,6 +88,12 @@ export default async function ProductDetail(props: ProductDetailProps) {
                     </Link>
                 )}
             </div>
+            <Link
+                href="/products"
+                className="fixed top-5 left-5 flex size-16 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-400"
+            >
+                <ArrowLeftIcon className="size-10" />
+            </Link>
         </div>
     );
 }
