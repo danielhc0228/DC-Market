@@ -25,7 +25,7 @@ export async function middleware(request: NextRequest) {
         }
     } else {
         if (exists) {
-            return NextResponse.redirect(new URL("/products", request.url)); // else, send user to product page (for now).
+            return NextResponse.redirect(new URL("/home", request.url)); // else, send user to home page (product page).
         }
     }
 }
