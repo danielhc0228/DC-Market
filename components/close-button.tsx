@@ -9,7 +9,7 @@ export default function CloseButton() {
         router.back();
     };
     return (
-        <button onClick={onCloseClick} className="text-neutral-200">
+        <button onClick={onCloseClick} className="absolute top-5 right-5 text-neutral-200">
             <XMarkIcon className="size-10" />
         </button>
     );
