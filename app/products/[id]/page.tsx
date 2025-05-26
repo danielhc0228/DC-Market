@@ -89,7 +89,7 @@ export default async function ProductDetail(props: ProductDetailProps) {
                 )}
             </div>
             <Link
-                href="/products"
+                href="/home"
                 className="fixed top-5 left-5 flex size-16 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-400"
             >
                 <ArrowLeftIcon className="size-10" />
