@@ -32,6 +32,14 @@ async function getProduct(id: number) {
     return product;
 }
 
+// this function generates metadata but requests data from db which allows product title to be a site's title.
+export async function generateMetadata({ params }: { params: { id: string } }) {
+    const product = await getProduct(Number(params.id));
+    return {
+        title: product?.title,
+    };
+}
+
 interface ProductDetailProps {
     params: Promise<{ id: string }>;
 }
