@@ -6,7 +6,10 @@ import { unstable_cache } from "next/cache";
 import Link from "next/link";
 
 // this function uses cache to store data from db and allow it to be used without requesting to db again.
-const getCachedProducts = unstable_cache(getInitialProducts, ["home-products"]);
+// 1st param: function to bring data
+// 2nd param: key to store data as a cache
+// 3rd param: optional param that refreshes cache when this function is accessed again after a set amount of time.
+const getCachedProducts = unstable_cache(getInitialProducts, ["home-products"], { revalidate: 60 });
 
 async function getInitialProducts() {
     const products = await db.product.findMany({
