@@ -1,8 +1,9 @@
-import DeleteButton from "@/app/products/[id]/DeleteButton";
+// import DeleteButton from "@/app/products/[id]/DeleteButton";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToWon } from "@/lib/utils";
 import { ArrowLeftIcon, UserIcon } from "@heroicons/react/24/solid";
+import { revalidateTag, unstable_cache } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -32,9 +33,30 @@ async function getProduct(id: number) {
     return product;
 }
 
+const getCachedProduct = unstable_cache(getProduct, ["product-detail"], {
+    tags: ["product-detail", "xxxx"],
+});
+
+async function getProductTitle(id: number) {
+    console.log("title");
+    const product = await db.product.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            title: true,
+        },
+    });
+    return product;
+}
+
+const getCachedProductTitle = unstable_cache(getProductTitle, ["product-title"], {
+    tags: ["product-title", "xxxx"],
+});
+
 // this function generates metadata but requests data from db which allows product title to be a site's title.
 export async function generateMetadata({ params }: { params: { id: string } }) {
-    const product = await getProduct(Number(params.id));
+    const product = await getCachedProductTitle(Number(params.id));
     return {
         title: product?.title,
     };
@@ -52,11 +74,19 @@ export default async function ProductDetail(props: ProductDetailProps) {
     if (isNaN(id)) {
         return notFound();
     }
-    const product = await getProduct(id);
+    // const product = await getProduct(id);
+    const product = await getCachedProduct(id);
     if (!product) {
         return notFound();
     }
     const isOwner = await getIsOwner(product.userId);
+
+    // this function revalidates cached data only for a certain tag.
+    const revalidate = async () => {
+        "use server";
+        revalidateTag("product-title");
+        //revalidateTag("xxxx") this will revalidate all data with tag xxxx.
+    };
     return (
         <div>
             <div className="relative aspect-square">
@@ -86,7 +116,13 @@ export default async function ProductDetail(props: ProductDetailProps) {
             <div className="fixed bottom-0 left-0 flex w-full items-center justify-between bg-neutral-800 p-5">
                 <span className="text-xl font-semibold">${formatToWon(product.price)}</span>
                 {isOwner ? (
-                    <DeleteButton id={id} />
+                    // <DeleteButton id={id} />
+                    //this button revalidates cached data
+                    <form action={revalidate}>
+                        <button className="rounded-md bg-red-500 px-5 py-2.5 font-semibold text-white">
+                            Revalidate title cache
+                        </button>
+                    </form>
                 ) : (
                     <Link
                         className="rounded-md bg-orange-500 px-5 py-2.5 font-semibold text-white"
