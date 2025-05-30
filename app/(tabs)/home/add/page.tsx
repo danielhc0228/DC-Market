@@ -65,7 +65,7 @@ export default function AddProduct() {
                     {preview === "" ? (
                         <>
                             <PhotoIcon className="w-20" />
-                            <div className="text-sm text-neutral-400">사진을 추가해주세요.</div>
+                            <div className="text-sm text-neutral-400">Add Photo</div>
                         </>
                     ) : null}
                 </label>
@@ -80,7 +80,7 @@ export default function AddProduct() {
                 <Input
                     name="title"
                     required
-                    placeholder="제목"
+                    placeholder="Title"
                     type="text"
                     errors={state?.fieldErrors.title}
                 />
@@ -88,17 +88,17 @@ export default function AddProduct() {
                     name="price"
                     type="number"
                     required
-                    placeholder="가격"
+                    placeholder="Price"
                     errors={state?.fieldErrors.price}
                 />
                 <Input
                     name="description"
                     type="text"
                     required
-                    placeholder="자세한 설명"
+                    placeholder="Description"
                     errors={state?.fieldErrors.description}
                 />
-                <Button text="작성 완료" />
+                <Button text="Submit" />
             </form>
         </div>
     );

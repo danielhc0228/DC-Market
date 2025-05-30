@@ -46,12 +46,12 @@ export default async function Products() {
     const initialProducts = await getCachedProducts();
     return (
         <div>
-            <ProductList initialProducts={initialProducts} />
             <form action={revalidate}>
                 <button>Revalidate</button>
             </form>
+            <ProductList initialProducts={initialProducts} />
             <Link
-                href="/products/add"
+                href="/home/add"
                 className="fixed right-8 bottom-24 flex size-16 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-400"
             >
                 <PlusIcon className="size-10" />

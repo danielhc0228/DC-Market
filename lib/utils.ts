@@ -9,6 +9,6 @@ export function formatToTimeAgo(date: string): string {
     return formatter.format(diff, "days");
 }
 
-export function formatToWon(price: number): string {
+export function formatToDollar(price: number): string {
     return price.toLocaleString("en-AU");
 }

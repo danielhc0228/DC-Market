@@ -60,7 +60,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
                     }}
                     className="mx-auto mb-96 w-fit rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold hover:opacity-90 active:scale-95"
                 >
-                    {isLoading ? "로딩 중" : "Load more"}
+                    {isLoading ? "Loading" : "Load more"}
                 </span>
             ) : null}
         </div>

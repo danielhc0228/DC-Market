@@ -1,7 +1,7 @@
-// import DeleteButton from "@/app/products/[id]/DeleteButton";
+import DeleteButton from "@/app/products/[id]/DeleteButton";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
-import { formatToWon } from "@/lib/utils";
+import { formatToDollar } from "@/lib/utils";
 import { ArrowLeftIcon, UserIcon } from "@heroicons/react/24/solid";
 import { revalidateTag, unstable_cache } from "next/cache";
 import Image from "next/image";
@@ -84,7 +84,7 @@ export default async function ProductDetail(props: ProductDetailProps) {
     // this function revalidates cached data only for a certain tag.
     const revalidate = async () => {
         "use server";
-        revalidateTag("product-title");
+        revalidateTag("product-detail");
         //revalidateTag("xxxx") this will revalidate all data with tag xxxx.
     };
     return (
@@ -114,15 +114,17 @@ export default async function ProductDetail(props: ProductDetailProps) {
                 <p>{product.description}</p>
             </div>
             <div className="fixed bottom-0 left-0 flex w-full items-center justify-between bg-neutral-800 p-5">
-                <span className="text-xl font-semibold">${formatToWon(product.price)}</span>
+                <span className="text-xl font-semibold">${formatToDollar(product.price)}</span>
                 {isOwner ? (
-                    // <DeleteButton id={id} />
-                    //this button revalidates cached data
-                    <form action={revalidate}>
-                        <button className="rounded-md bg-red-500 px-5 py-2.5 font-semibold text-white">
-                            Revalidate title cache
-                        </button>
-                    </form>
+                    <>
+                        <DeleteButton id={id} />
+
+                        <form action={revalidate}>
+                            <button className="cursor-pointer rounded-md bg-red-500 px-5 py-2.5 font-semibold text-white hover:bg-red-400">
+                                Revalidate
+                            </button>
+                        </form>
+                    </>
                 ) : (
                     <Link
                         className="rounded-md bg-orange-500 px-5 py-2.5 font-semibold text-white"
@@ -141,3 +143,15 @@ export default async function ProductDetail(props: ProductDetailProps) {
         </div>
     );
 }
+
+// this function generates static pages from pages that were dynamic pages.
+// In order for this function to work, getSession must be commented out (not used) because getSession is dynamic.
+// take note: this converts dynamic pages to static HTML pages so if there are 10000 pages, not a good idea to use this function.
+// export async function generateStaticParams() {
+//   const products = await db.product.findMany({
+//     select: {
+//       id: true,
+//     },
+//   });
+//   return products.map((product) => ({ id: product.id + "" }));
+// }

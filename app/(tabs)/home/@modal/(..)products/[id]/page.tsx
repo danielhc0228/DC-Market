@@ -1,10 +1,9 @@
 "use server";
 
-import DeleteButton from "@/app/products/[id]/DeleteButton";
 import CloseButton from "@/components/close-button";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
-import { formatToWon } from "@/lib/utils";
+import { formatToDollar } from "@/lib/utils";
 import { UserIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,7 +35,12 @@ async function getProduct(id: number) {
     return product;
 }
 
-export default async function Modal({ params }: { params: { id: string } }) {
+interface ProductDetailProps {
+    params: Promise<{ id: string }>;
+}
+
+export default async function Modal(props: ProductDetailProps) {
+    const params = await props.params;
     const id = Number(params.id);
     // if id is not number or not found in the db, lead to 404 page.
     if (isNaN(id)) {
@@ -91,10 +95,15 @@ export default async function Modal({ params }: { params: { id: string } }) {
             {/* Bottom Action Bar */}
             <div className="flex items-center justify-between rounded-b-xl border-t border-neutral-800 bg-neutral-800 px-6 py-4">
                 <span className="text-xl font-semibold text-white">
-                    ₩{formatToWon(product.price)}
+                    ${formatToDollar(product.price)}
                 </span>
                 {isOwner ? (
-                    <DeleteButton id={id} />
+                    <Link
+                        href={`/products/${id}/edit`}
+                        className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                    >
+                        Edit
+                    </Link>
                 ) : (
                     <Link
                         href={``}
