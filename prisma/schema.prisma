@@ -64,7 +64,7 @@ model Post {
 
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId  Int
-  Comment Comment[]
+  Comment Comment[] // change Comment, Like -> comments, likes later
   Like    Like[]
 }
 
