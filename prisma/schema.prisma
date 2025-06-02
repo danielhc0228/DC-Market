@@ -90,5 +90,5 @@ model Like {
   userId     Int
   postId     Int
 
-  @@id(name: "id", [userId, postId])
+  @@id(name: "id", [userId, postId]) // this creates unique id composed of multiple attribute.
 }
