@@ -12,6 +12,7 @@ async function getPosts() {
             views: true,
             created_at: true,
             _count: {
+                // find the number of total comments and likes for each posts
                 select: {
                     Comment: true,
                     Like: true,
