@@ -2,7 +2,8 @@ import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToTimeAgo } from "@/lib/utils";
 import { EyeIcon, HandThumbUpIcon } from "@heroicons/react/24/solid";
-import { revalidatePath } from "next/cache";
+import { HandThumbUpIcon as OutlineHandThumbUpIcon } from "@heroicons/react/24/outline";
+import { revalidateTag, unstable_cache } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -39,25 +40,52 @@ async function getPost(id: number) {
     }
 }
 
-async function getIsLiked(postId: number) {
-    const session = await getSession();
-    const like = await db.like.findUnique({
+// this caches post data which makes the view count to not increment every time a like button is clicked.
+const getCachedPost = unstable_cache(getPost, ["post-detail"], {
+    tags: ["post-detail"],
+    revalidate: 60,
+});
+
+// return the number of likes of a post and let isLiked to true if a user has already liked the post
+async function getLikeStatus(postId: number, userId: number) {
+    const isLiked = await db.like.findUnique({
         where: {
             id: {
                 postId,
-                userId: session.id!,
+                userId: userId,
             },
         },
     });
-    return Boolean(like);
+    const likeCount = await db.like.count({
+        where: {
+            postId,
+        },
+    });
+    return {
+        likeCount,
+        isLiked: Boolean(isLiked),
+    };
 }
 
-export default async function PostDetail({ params }: { params: { id: string } }) {
-    const id = Number(params.id);
+// store likedstatus as cache.
+// the function is outside of PostDetail but postId can be retrieved by doing recursive act.
+async function getCachedLikeStatus(postId: number) {
+    const session = await getSession();
+    const userId = session.id;
+    const cachedOperation = unstable_cache(getLikeStatus, ["product-like-status"], {
+        tags: [`like-status-${postId}`],
+    });
+    return cachedOperation(postId, userId!);
+}
+
+export default async function PostDetail({ params }: { params: Promise<{ id: string }> }) {
+    const param = await params;
+    const id = Number(param.id);
+
     if (isNaN(id)) {
         return notFound();
     }
-    const post = await getPost(id);
+    const post = await getCachedPost(id);
     if (!post) {
         return notFound();
     }
@@ -71,7 +99,7 @@ export default async function PostDetail({ params }: { params: { id: string } })
                     userId: session.id!,
                 },
             });
-            revalidatePath(`/post/${id}`); // bad method. it increments views as well when liked or disliked
+            revalidateTag(`like-status-${id}`); // revalidates like status
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {}
     };
@@ -87,11 +115,11 @@ export default async function PostDetail({ params }: { params: { id: string } })
                     },
                 },
             });
-            revalidatePath(`/post/${id}`);
+            revalidateTag(`like-status-${id}`);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {}
     };
-    const isLiked = await getIsLiked(id);
+    const { likeCount, isLiked } = await getCachedLikeStatus(id);
     return (
         <div className="p-5 text-white">
             <div className="mb-2 flex items-center gap-2">
@@ -118,10 +146,18 @@ export default async function PostDetail({ params }: { params: { id: string } })
                 </div>
                 <form action={isLiked ? dislikePost : likePost}>
                     <button
-                        className={`flex items-center gap-2 rounded-full border border-neutral-400 p-2 text-sm text-neutral-400 transition-colors hover:bg-neutral-800`}
+                        className={`flex items-center gap-2 rounded-full border border-neutral-400 p-2 text-sm text-neutral-400 transition-colors ${
+                            isLiked
+                                ? "border-orange-500 bg-orange-500 text-white"
+                                : "hover:bg-neutral-800"
+                        }`}
                     >
-                        <HandThumbUpIcon className="size-5" />
-                        <span>공감하기 ({post._count.Like})</span>
+                        {isLiked ? (
+                            <HandThumbUpIcon className="size-5" />
+                        ) : (
+                            <OutlineHandThumbUpIcon className="size-5" />
+                        )}
+                        {isLiked ? <span> {likeCount}</span> : <span>Like ({likeCount})</span>}
                     </button>
                 </form>
             </div>
