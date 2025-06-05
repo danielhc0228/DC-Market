@@ -14,8 +14,8 @@ async function getPosts() {
             _count: {
                 // find the number of total comments and likes for each posts
                 select: {
-                    Comment: true,
-                    Like: true,
+                    comments: true,
+                    likes: true,
                 },
             },
         },
@@ -49,13 +49,13 @@ export default async function Life() {
                             <span>
                                 <HandThumbUpIcon className="size-4" />
                                 {
-                                    post._count.Like //change to likes later
+                                    post._count.likes //change to likes later
                                 }
                             </span>
                             <span>
                                 <ChatBubbleBottomCenterIcon className="size-4" />
                                 {
-                                    post._count.Comment // change to comments later
+                                    post._count.comments // change to comments later
                                 }
                             </span>
                         </div>

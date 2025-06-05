@@ -28,11 +28,11 @@ async function getPost(id: number) {
                 },
                 _count: {
                     select: {
-                        Comment: true,
-                        Like: true,
+                        comments: true,
+                        likes: true,
                     },
                 },
-                Comment: {
+                comments: {
                     select: {
                         id: true,
                         payload: true, //comment string
@@ -136,7 +136,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
             <CommentInput
                 id={id}
                 sessionId={session.id!}
-                comments={post.Comment}
+                comments={post.comments}
                 user={post.user}
             />
         </div>

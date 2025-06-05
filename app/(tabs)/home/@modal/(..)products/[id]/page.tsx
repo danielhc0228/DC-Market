@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import CloseBackground from "@/components/close-background";
+import ChatRoomForm from "@/components/chat-room-form";
 
 async function getIsOwner(userId: number) {
     const session = await getSession();
@@ -105,12 +106,7 @@ export default async function Modal(props: ProductDetailProps) {
                         Edit
                     </Link>
                 ) : (
-                    <Link
-                        href={``}
-                        className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-                    >
-                        Chat
-                    </Link>
+                    <ChatRoomForm productId={product.userId} />
                 )}
             </div>
         </CloseBackground>

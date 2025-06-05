@@ -1,4 +1,5 @@
 import DeleteButton from "@/app/products/[id]/DeleteButton";
+import ChatRoomForm from "@/components/chat-room-form";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToDollar } from "@/lib/utils";
@@ -55,8 +56,10 @@ const getCachedProductTitle = unstable_cache(getProductTitle, ["product-title"],
 });
 
 // this function generates metadata but requests data from db which allows product title to be a site's title.
-export async function generateMetadata({ params }: { params: { id: string } }) {
-    const product = await getCachedProductTitle(Number(params.id));
+export async function generateMetadata(props: ProductDetailProps) {
+    const params = await props.params;
+    const id = Number(params.id);
+    const product = await getCachedProductTitle(id);
     return {
         title: product?.title,
     };
@@ -126,12 +129,7 @@ export default async function ProductDetail(props: ProductDetailProps) {
                         </form>
                     </>
                 ) : (
-                    <Link
-                        className="rounded-md bg-orange-500 px-5 py-2.5 font-semibold text-white"
-                        href={``}
-                    >
-                        Chat
-                    </Link>
+                    <ChatRoomForm productId={product.userId} />
                 )}
             </div>
             <Link
