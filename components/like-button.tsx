@@ -12,6 +12,13 @@ interface LikeButtonProps {
 }
 
 export default function LikeButton({ isLiked, likeCount, postId }: LikeButtonProps) {
+    /**
+     * const [state, reducerFn] = useOptimistic(initialState, reducerFunction)
+     * state is your current optimistic UI state.
+     * reducerFn(payload) is how you update the optimistic state.
+     * reducerFunction(previousState, payload) is a custom function that tells
+     * React how to compute the next state from the current one.
+     */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [state, reducerFn] = useOptimistic({ isLiked, likeCount }, (previousState, payload) => ({
         isLiked: !previousState.isLiked,

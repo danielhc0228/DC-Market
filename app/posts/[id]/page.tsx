@@ -6,6 +6,7 @@ import { unstable_cache } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import LikeButton from "@/components/like-button";
+import CommentInput from "@/components/comment-input";
 
 async function getPost(id: number) {
     try {
@@ -29,6 +30,20 @@ async function getPost(id: number) {
                     select: {
                         Comment: true,
                         Like: true,
+                    },
+                },
+                Comment: {
+                    select: {
+                        id: true,
+                        payload: true, //comment string
+                        userId: true, //userid of author
+                        created_at: true,
+                        user: {
+                            select: {
+                                avatar: true, //avatar of author
+                                username: true, //username of author
+                            },
+                        },
                     },
                 },
             },
@@ -91,6 +106,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
     }
 
     const { likeCount, isLiked } = await getCachedLikeStatus(id);
+    const session = await getSession();
     return (
         <div className="p-5 text-white">
             <div className="mb-2 flex items-center gap-2">
@@ -117,6 +133,12 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 </div>
                 <LikeButton isLiked={isLiked} likeCount={likeCount} postId={id} />
             </div>
+            <CommentInput
+                id={id}
+                sessionId={session.id!}
+                comments={post.Comment}
+                user={post.user}
+            />
         </div>
     );
 }
