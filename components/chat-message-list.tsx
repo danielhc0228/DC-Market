@@ -81,11 +81,11 @@ export default function ChatMessagesList({
                 >
                     {message.userId === userId ? null : (
                         <Image
-                            src={message.user.avatar!}
+                            src={message.user.avatar ? message.user.avatar : "/avatar.png"}
                             alt={message.user.username}
                             width={50}
                             height={50}
-                            className="size-8 rounded-full"
+                            className="size-10 rounded-full"
                         />
                     )}
                     <div
