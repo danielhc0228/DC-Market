@@ -56,13 +56,15 @@ export default function ProductList({ initialProducts }: ProductListProps) {
                 <span
                     ref={trigger}
                     style={{
-                        marginTop: `${page + 1 * 300}vh`, //test purpose since there aren't many products
+                        marginTop: `${page + 1 * 100}vh`, //test purpose since there aren't many products
                     }}
-                    className="mx-auto mb-96 w-fit rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold hover:opacity-90 active:scale-95"
+                    className="mx-auto mb-50 w-fit rounded-md bg-orange-500 px-3 py-2 text-sm font-semibold hover:opacity-90 active:scale-95"
                 >
                     {isLoading ? "Loading" : "Load more"}
                 </span>
-            ) : null}
+            ) : (
+                <div className="mb-15" />
+            )}
         </div>
     );
 }
