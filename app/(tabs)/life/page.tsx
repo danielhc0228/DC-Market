@@ -31,6 +31,7 @@ export default async function Life() {
     const posts = await getPosts();
     return (
         <div className="flex flex-col p-5">
+            <h1 className="mb-6 text-2xl text-amber-50">Posts</h1>
             {posts.map((post) => (
                 <Link
                     key={post.id}
