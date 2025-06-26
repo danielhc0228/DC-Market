@@ -106,7 +106,7 @@ export default async function Modal(props: ProductDetailProps) {
                         Edit
                     </Link>
                 ) : (
-                    <ChatRoomForm productId={product.userId} />
+                    <ChatRoomForm productId={product.id} />
                 )}
             </div>
         </CloseBackground>

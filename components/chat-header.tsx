@@ -41,18 +41,20 @@ export default function ChatHeader({ otherUser, isSeller, productId, isSold }: C
                 />
                 <span className="text-xl font-semibold text-orange-400">{otherUser.username}</span>
             </div>
-            {isSeller && !isSold ? (
-                <form action={updateSoldStatus}>
-                    <input type="hidden" name="productId" value={productId} />
-                    <button className="rounded-md bg-orange-500 px-3 py-1 text-sm text-white hover:bg-orange-400">
-                        Mark as Sold
+            {isSeller ? (
+                !isSold ? (
+                    <form action={updateSoldStatus}>
+                        <input type="hidden" name="productId" value={productId} />
+                        <button className="rounded-md bg-orange-500 px-3 py-1 text-sm text-white hover:bg-orange-400">
+                            Mark as Sold
+                        </button>
+                    </form>
+                ) : (
+                    <button className="rounded-md bg-gray-400 px-3 py-1 text-sm text-white">
+                        Sold
                     </button>
-                </form>
-            ) : (
-                <button className="rounded-md bg-gray-400 px-3 py-1 text-sm text-white">
-                    Sold
-                </button>
-            )}
+                )
+            ) : null}
         </div>
     );
 }

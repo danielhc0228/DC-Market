@@ -129,7 +129,7 @@ export default async function ProductDetail(props: ProductDetailProps) {
                         </form>
                     </>
                 ) : (
-                    <ChatRoomForm productId={product.userId} />
+                    <ChatRoomForm productId={product.id} />
                 )}
             </div>
             <Link
