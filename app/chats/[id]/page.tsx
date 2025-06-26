@@ -1,3 +1,4 @@
+import ChatHeader from "@/components/chat-header";
 import ChatMessagesList from "@/components/chat-message-list";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
@@ -73,13 +74,55 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
     }
     const initialMessages = await getMessages(params.id);
     const session = await getSession();
+
+    // const chats = await getChats();
+    const chatRoom = await db.chatRoom.findUnique({
+        where: { id: params.id },
+        include: {
+            users: {
+                select: {
+                    id: true,
+                    username: true,
+                    avatar: true,
+                },
+            },
+            product: {
+                select: {
+                    id: true,
+                    title: true,
+                    isSold: true,
+                    userId: true, // seller
+                },
+            },
+        },
+    });
+
+    if (!chatRoom) {
+        notFound(); // or redirect("/404") if you want
+    }
+
+    const userId = session.id;
+    const otherUser = chatRoom.users.find((u) => u.id !== userId)!;
+    const isSeller = chatRoom.product.userId === userId;
+
     return (
-        <ChatMessagesList
-            chatRoomId={params.id}
-            userId={session.id!}
-            initialMessages={initialMessages}
-            username={user.username}
-            avatar={user.avatar!}
-        />
+        <div>
+            <ChatHeader
+                otherUser={{
+                    username: otherUser.username,
+                    avatar: otherUser.avatar,
+                }}
+                isSeller={isSeller}
+                productId={chatRoom.product.id}
+                isSold={chatRoom.product.isSold}
+            />
+            <ChatMessagesList
+                chatRoomId={params.id}
+                userId={session.id!}
+                initialMessages={initialMessages}
+                username={user.username}
+                avatar={user.avatar!}
+            />
+        </div>
     );
 }

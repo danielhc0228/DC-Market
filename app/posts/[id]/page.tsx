@@ -114,7 +114,7 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                     width={28}
                     height={28}
                     className="size-7 rounded-full"
-                    src={post.user.avatar!}
+                    src={post.user.avatar ? post.user.avatar : "/avatar.png"}
                     alt={post.user.username}
                 />
                 <div>

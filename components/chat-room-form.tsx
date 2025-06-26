@@ -2,57 +2,55 @@ import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { redirect } from "next/navigation";
 
-const createChatRoom = async (otherUserId: number) => {
+const createChatRoom = async (productId: number) => {
     "use server";
     const session = await getSession();
 
-    // Step 1: Check for existing room
-    const existingRoom = await db.chatRoom.findFirst({
-        where: {
-            users: {
-                every: {
-                    id: {
-                        in: [otherUserId, session.id!],
-                    },
-                },
-            },
-            AND: [
-                {
-                    users: {
-                        some: {
-                            id: session.id,
-                        },
-                    },
-                },
-                {
-                    users: {
-                        some: {
-                            id: otherUserId,
-                        },
-                    },
-                },
-            ],
-        },
+    // Get product and seller
+    const product = await db.product.findUnique({
+        where: { id: productId },
         select: {
-            id: true,
+            userId: true,
         },
     });
 
+    if (!product || product.userId === session.id) {
+        // Prevent chatting with yourself or non-existing product
+        redirect("/chats");
+    }
+
+    const sellerId = product.userId;
+
+    // Check for existing room with same product and users
+    const existingRoom = await db.chatRoom.findFirst({
+        where: {
+            productId,
+            users: {
+                every: {
+                    id: {
+                        in: [sellerId, session.id!],
+                    },
+                },
+            },
+        },
+        select: { id: true },
+    });
+
     if (existingRoom) {
-        // Step 2: Redirect to existing room
         redirect(`/chats/${existingRoom.id}`);
     }
 
-    // Step 3: Create new room if none exists
+    // Create new room
     const newRoom = await db.chatRoom.create({
         data: {
+            product: {
+                connect: { id: productId },
+            },
             users: {
-                connect: [{ id: otherUserId }, { id: session.id }],
+                connect: [{ id: sellerId }, { id: session.id }],
             },
         },
-        select: {
-            id: true,
-        },
+        select: { id: true },
     });
 
     redirect(`/chats/${newRoom.id}`);

@@ -47,7 +47,7 @@ export default async function Chat() {
     const chats = await getChats();
     const session = await getSession();
     return (
-        <div className="space-y-4 p-4">
+        <div className="flex flex-col gap-[5px] p-4">
             <h1 className="mb-6 text-2xl text-amber-50">Chats</h1>
 
             {chats.map((chat) => {

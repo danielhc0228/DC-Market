@@ -28,8 +28,14 @@ export default async function Profile() {
     return (
         <div>
             <h1>Welcome! {user?.username}!</h1>
+            <button>Edit Profile</button>
+            <div>Bought Items:</div>
+            <div>Sold Items:</div>
+            <div>Reviews:</div>
             <form action={logOut}>
-                <button>Log out</button>
+                <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                    Log out
+                </button>
             </form>
         </div>
     );

@@ -33,16 +33,14 @@ export default function Comments({
         >
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    {user.avatar ? (
-                        <Image
-                            src={`${user.avatar}/avatar`}
-                            alt={user.username}
-                            width={30}
-                            height={30}
-                        />
-                    ) : (
-                        <div className="size-8 rounded-full bg-slate-400"></div>
-                    )}
+                    <Image
+                        src={user.avatar ? user.avatar : "/avatar.png"}
+                        alt={user.username}
+                        width={30}
+                        height={30}
+                        className="size-8 rounded-full"
+                    />
+
                     <div>{user.username}</div>
                     <div className="text-xs text-neutral-500">{createdAt}</div>
                 </div>
