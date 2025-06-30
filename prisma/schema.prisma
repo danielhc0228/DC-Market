@@ -32,7 +32,9 @@ model User {
   chat_rooms ChatRoom[]
   messages   Message[]
 
-  boughtProducts Product[] @relation("BoughtProducts") // ⬅️ Products this user bought
+  boughtProducts  Product[] @relation("BoughtProducts") // ⬅️ Products this user bought
+  writtenReviews  Review[]  @relation("Reviewer")
+  receivedReviews Review[]  @relation("Reviewee")
 }
 
 model SMSToken {
@@ -62,6 +64,7 @@ model Product {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+  Review     Review[]
 }
 
 model Post {
@@ -126,4 +129,22 @@ model Message {
   user       User     @relation(fields: [userId], references: [id])
   chatRoomId String
   userId     Int
+}
+
+model Review {
+  id         Int      @id @default(autoincrement())
+  rating     Int // e.g. 1-5
+  comment    String
+  created_at DateTime @default(now())
+
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+
+  reviewer   User @relation("Reviewer", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reviewerId Int
+
+  reviewee   User @relation("Reviewee", fields: [revieweeId], references: [id], onDelete: Cascade)
+  revieweeId Int
+
+  @@unique([productId, reviewerId, revieweeId]) // Optional: prevent duplicates
 }
