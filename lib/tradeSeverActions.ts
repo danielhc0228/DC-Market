@@ -39,3 +39,18 @@ export async function submitReview(formData: FormData) {
         },
     });
 }
+
+export async function hasWrittenReview(productId: number, reviewerId: number, revieweeId: number) {
+    const existingReview = await db.review.findFirst({
+        where: {
+            productId,
+            reviewerId,
+            revieweeId,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    return existingReview !== null;
+}

@@ -23,6 +23,7 @@ interface ChatMessageListProps {
     productId: number;
     isSold: boolean;
     isSeller: boolean;
+    isReviewed: boolean;
 }
 export default function ChatMessagesList({
     chatRoomId,
@@ -33,6 +34,7 @@ export default function ChatMessagesList({
     productId,
     isSold,
     isSeller,
+    isReviewed,
 }: ChatMessageListProps) {
     const [messages, setMessages] = useState(initialMessages);
     const [message, setMessage] = useState("");
@@ -129,7 +131,10 @@ export default function ChatMessagesList({
                         </div>
                     </div>
                 ))}
-                {isSold && !isSeller ? (
+
+                {isReviewed ? (
+                    <div className="mx-auto text-gray-400">Thanks for reviewing!</div>
+                ) : isSold && !isSeller ? ( // review form for buyers once the product is bought
                     <form action={submitReview}>
                         <input type="hidden" name="productId" value={productId} />
                         <input type="hidden" name="reviewerId" value={userId} />
@@ -159,7 +164,9 @@ export default function ChatMessagesList({
                             Submit Review
                         </button>
                     </form>
-                ) : null}
+                ) : (
+                    <div className="mx-auto text-gray-400">Item has been sold!</div>
+                )}
 
                 <form className="relative flex" onSubmit={onSubmit}>
                     <input

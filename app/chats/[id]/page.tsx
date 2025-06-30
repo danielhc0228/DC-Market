@@ -2,6 +2,7 @@ import ChatHeader from "@/components/chat-header";
 import ChatMessagesList from "@/components/chat-message-list";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
+import { hasWrittenReview } from "@/lib/tradeSeverActions";
 import { Prisma } from "@prisma/client";
 import { notFound } from "next/navigation";
 
@@ -104,6 +105,7 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
     const userId = session.id;
     const otherUser = chatRoom.users.find((u) => u.id !== userId)!;
     const isSeller = chatRoom.product.userId === userId;
+    const isReviewed = await hasWrittenReview(chatRoom.product.id, userId!, otherUser.id);
 
     return (
         <div>
@@ -125,6 +127,7 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
                 productId={chatRoom.product.id}
                 isSold={chatRoom.product.isSold}
                 isSeller={isSeller}
+                isReviewed={isReviewed}
             />
         </div>
     );
