@@ -2,6 +2,7 @@
 
 import saveMessage from "@/app/chats/[id]/actions";
 import { InitialChatMessages } from "@/app/chats/[id]/page";
+import { submitReview } from "@/lib/tradeSeverActions";
 import { formatToTimeAgo } from "@/lib/utils";
 import { ArrowUpCircleIcon } from "@heroicons/react/24/solid";
 import { createClient, RealtimeChannel } from "@supabase/supabase-js";
@@ -19,6 +20,9 @@ interface ChatMessageListProps {
     chatRoomId: string;
     username: string;
     avatar: string;
+    productId: number;
+    isSold: boolean;
+    isSeller: boolean;
 }
 export default function ChatMessagesList({
     chatRoomId,
@@ -26,6 +30,9 @@ export default function ChatMessagesList({
     userId,
     username,
     avatar,
+    productId,
+    isSold,
+    isSeller,
 }: ChatMessageListProps) {
     const [messages, setMessages] = useState(initialMessages);
     const [message, setMessage] = useState("");
@@ -122,6 +129,38 @@ export default function ChatMessagesList({
                         </div>
                     </div>
                 ))}
+                {isSold && !isSeller ? (
+                    <form action={submitReview}>
+                        <input type="hidden" name="productId" value={productId} />
+                        <input type="hidden" name="reviewerId" value={userId} />
+                        <label className="mb-1 block">
+                            Rating:
+                            <input
+                                type="number"
+                                name="rating"
+                                min="1"
+                                max="5"
+                                required
+                                className="ml-2 w-16 border p-1"
+                            />
+                        </label>
+
+                        <label className="mb-2 block">
+                            Comment:
+                            <textarea
+                                name="comment"
+                                required
+                                className="w-full border p-2"
+                                placeholder="Write your review..."
+                            ></textarea>
+                        </label>
+
+                        <button className="rounded-md bg-orange-500 px-3 py-1 text-sm text-white hover:bg-orange-400">
+                            Submit Review
+                        </button>
+                    </form>
+                ) : null}
+
                 <form className="relative flex" onSubmit={onSubmit}>
                     <input
                         required

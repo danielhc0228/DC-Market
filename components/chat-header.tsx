@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { updateSoldStatus } from "@/lib/updateSoldStatus";
+import { updateSoldStatus } from "@/lib/tradeSeverActions";
 
 interface ChatHeaderProps {
     otherUser: {

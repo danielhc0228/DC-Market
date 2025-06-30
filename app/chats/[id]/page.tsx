@@ -122,6 +122,9 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
                 initialMessages={initialMessages}
                 username={user.username}
                 avatar={user.avatar!}
+                productId={chatRoom.product.id}
+                isSold={chatRoom.product.isSold}
+                isSeller={isSeller}
             />
         </div>
     );
