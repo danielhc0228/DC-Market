@@ -51,6 +51,23 @@ async function getSoldItems() {
     return soldItems;
 }
 
+async function getBoughtItems() {
+    const session = await getSession();
+    const boughtItems = await db.product.findMany({
+        where: {
+            buyerId: session.id,
+            isSold: true,
+        },
+        select: {
+            id: true,
+            title: true,
+            photo: true,
+        },
+    });
+
+    return boughtItems;
+}
+
 function calcAvg(reviews: { rating: number }[]) {
     if (reviews.length === 0) return 0;
 
@@ -73,6 +90,7 @@ export default async function Profile() {
     const receivedReview = await getReceivedReview();
     const averageReview = calcAvg(receivedReview);
     const soldItems = await getSoldItems();
+    const boughtItems = await getBoughtItems();
 
     return (
         <div>
@@ -82,30 +100,61 @@ export default async function Profile() {
                 {averageReview === 0 ? "--" : averageReview.toFixed(2)}
             </h2>
             <button>Edit Profile</button>
-            <div>Bought Items:</div>
+            <div>
+                Bought Items:
+                {boughtItems.length > 0 ? (
+                    <div>
+                        {boughtItems.map((boughtItem) => (
+                            <Link
+                                href={`/products/${boughtItem.id}`}
+                                key={boughtItem.id}
+                                className="flex gap-5"
+                            >
+                                <div className="relative size-28 overflow-hidden rounded-md">
+                                    <Image
+                                        fill
+                                        src={boughtItem.photo}
+                                        className="object-cover"
+                                        alt={boughtItem.title}
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1 *:text-white">
+                                    <span className="text-lg">{boughtItem.title}</span>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    "You haven't bought anything yet!"
+                )}
+            </div>
             <div>
                 Sold Items:
-                <div>
-                    {soldItems.map((soldItem) => (
-                        <Link
-                            href={`/products/${soldItem.id}`}
-                            key={soldItem.id}
-                            className="flex gap-5"
-                        >
-                            <div className="relative size-28 overflow-hidden rounded-md">
-                                <Image
-                                    fill
-                                    src={soldItem.photo}
-                                    className="object-cover"
-                                    alt={soldItem.title}
-                                />
-                            </div>
-                            <div className="flex flex-col gap-1 *:text-white">
-                                <span className="text-lg">{soldItem.title}</span>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
+                {soldItems.length > 0 ? (
+                    <div>
+                        {soldItems.map((soldItem) => (
+                            <Link
+                                href={`/products/${soldItem.id}`}
+                                key={soldItem.id}
+                                className="flex gap-5"
+                            >
+                                <div className="relative size-28 overflow-hidden rounded-md">
+                                    <Image
+                                        fill
+                                        src={soldItem.photo}
+                                        className="object-cover"
+                                        alt={soldItem.title}
+                                    />
+                                </div>
+                                <div className="flex flex-col gap-1 *:text-white">
+                                    <span className="text-lg">{soldItem.title}</span>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    "You haven't sold anything yet!"
+                )}
             </div>
             <div>Reviews:</div>
 
