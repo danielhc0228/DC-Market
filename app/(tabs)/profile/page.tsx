@@ -1,6 +1,8 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { StarIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 async function getUser() {
@@ -32,6 +34,23 @@ async function getReceivedReview() {
     return receivedReview;
 }
 
+async function getSoldItems() {
+    const session = await getSession();
+    const soldItems = await db.product.findMany({
+        where: {
+            userId: session.id,
+            isSold: true,
+        },
+        select: {
+            id: true,
+            title: true,
+            photo: true,
+        },
+    });
+
+    return soldItems;
+}
+
 function calcAvg(reviews: { rating: number }[]) {
     if (reviews.length === 0) return 0;
 
@@ -53,6 +72,7 @@ export default async function Profile() {
     };
     const receivedReview = await getReceivedReview();
     const averageReview = calcAvg(receivedReview);
+    const soldItems = await getSoldItems();
 
     return (
         <div>
@@ -63,7 +83,30 @@ export default async function Profile() {
             </h2>
             <button>Edit Profile</button>
             <div>Bought Items:</div>
-            <div>Sold Items:</div>
+            <div>
+                Sold Items:
+                <div>
+                    {soldItems.map((soldItem) => (
+                        <Link
+                            href={`/products/${soldItem.id}`}
+                            key={soldItem.id}
+                            className="flex gap-5"
+                        >
+                            <div className="relative size-28 overflow-hidden rounded-md">
+                                <Image
+                                    fill
+                                    src={soldItem.photo}
+                                    className="object-cover"
+                                    alt={soldItem.title}
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1 *:text-white">
+                                <span className="text-lg">{soldItem.title}</span>
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </div>
             <div>Reviews:</div>
 
             <form action={logOut}>
