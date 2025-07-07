@@ -187,10 +187,10 @@ export default async function Profile() {
                 Reviews:
                 <div>
                     <h3>Total: {receivedReview.totalReviews} reviews</h3>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                         {fullSummary.map((r) => (
                             <div key={r.star} className="flex items-center gap-2">
-                                <div className="flex w-28">
+                                <div className="flex w-23">
                                     {Array.from({ length: r.star }).map((_, i) => (
                                         <StarIcon
                                             key={i}
@@ -214,7 +214,11 @@ export default async function Profile() {
                     </div>
                 </div>
             </div>
-            <Link href="/reviews"></Link>
+            <Link href="/reviews">
+                <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                    See Comments
+                </button>
+            </Link>
 
             <form action={logOut}>
                 <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
