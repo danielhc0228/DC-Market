@@ -22,16 +22,35 @@ async function getUser() {
 
 async function getReceivedReview() {
     const session = await getSession();
-    const receivedReview = await db.review.findMany({
-        where: {
-            revieweeId: session.id,
-        },
-        select: {
-            rating: true,
-        },
-    });
+    const [reviews, totalReviews, starSummary] = await Promise.all([
+        db.review.findMany({
+            where: {
+                revieweeId: session.id,
+            },
+            select: {
+                rating: true,
+                comment: true,
+                reviewer: {
+                    select: {
+                        username: true,
+                        avatar: true,
+                    },
+                },
+            },
+        }),
+        db.review.count({
+            where: {
+                revieweeId: session.id,
+            },
+        }),
+        db.review.groupBy({
+            by: ["rating"],
+            where: { revieweeId: session.id },
+            _count: { rating: true },
+        }),
+    ]);
 
-    return receivedReview;
+    return { reviews, totalReviews, starSummary };
 }
 
 async function getSoldItems() {
@@ -88,9 +107,17 @@ export default async function Profile() {
         redirect("/");
     };
     const receivedReview = await getReceivedReview();
-    const averageReview = calcAvg(receivedReview);
+    const averageReview = calcAvg(receivedReview.reviews);
     const soldItems = await getSoldItems();
     const boughtItems = await getBoughtItems();
+
+    const fullSummary = [5, 4, 3, 2, 1].map((star) => {
+        const found = receivedReview.starSummary.find((r) => r.rating === star);
+        return {
+            star,
+            count: found ? found._count.rating : 0,
+        };
+    });
 
     return (
         <div>
@@ -156,7 +183,38 @@ export default async function Profile() {
                     "You haven't sold anything yet!"
                 )}
             </div>
-            <div>Reviews:</div>
+            <div>
+                Reviews:
+                <div>
+                    <h3>Total: {receivedReview.totalReviews} reviews</h3>
+                    <div className="space-y-2">
+                        {fullSummary.map((r) => (
+                            <div key={r.star} className="flex items-center gap-2">
+                                <div className="flex w-28">
+                                    {Array.from({ length: r.star }).map((_, i) => (
+                                        <StarIcon
+                                            key={i}
+                                            width={13}
+                                            height={13}
+                                            className="text-blue-50"
+                                        />
+                                    ))}
+                                </div>
+                                <div className="relative h-3 w-full rounded bg-gray-200">
+                                    <div
+                                        className="absolute top-0 left-0 h-3 rounded bg-orange-400"
+                                        style={{
+                                            width: `${(r.count / receivedReview.totalReviews) * 100}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <span className="w-6 text-sm">{r.count}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <Link href="/reviews"></Link>
 
             <form action={logOut}>
                 <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">

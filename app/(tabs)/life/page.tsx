@@ -49,15 +49,11 @@ export default async function Life() {
                         <div className="flex items-center gap-4 *:flex *:items-center *:gap-1">
                             <span>
                                 <HandThumbUpIcon className="size-4" />
-                                {
-                                    post._count.likes //change to likes later
-                                }
+                                {post._count.likes}
                             </span>
                             <span>
                                 <ChatBubbleBottomCenterIcon className="size-4" />
-                                {
-                                    post._count.comments // change to comments later
-                                }
+                                {post._count.comments}
                             </span>
                         </div>
                     </div>
