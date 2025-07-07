@@ -93,7 +93,6 @@ export default function ChatMessagesList({
             channel.current?.unsubscribe(); // clear function, disconnect from the channel
         };
     }, [chatRoomId]);
-
     return (
         <div>
             <div className="flex min-h-screen flex-col justify-end gap-5 p-5">
@@ -164,9 +163,9 @@ export default function ChatMessagesList({
                             Submit Review
                         </button>
                     </form>
-                ) : (
+                ) : isSold && isSeller ? (
                     <div className="mx-auto text-gray-400">Item has been sold!</div>
-                )}
+                ) : null}
 
                 <form className="relative flex" onSubmit={onSubmit}>
                     <input

@@ -71,7 +71,7 @@ export default async function Chat() {
                                 <div className="text-lg font-semibold text-gray-900">
                                     {otherUser?.username}
                                 </div>
-                                <div className="max-w-xs truncate text-sm text-gray-600">
+                                <div className="max-w-55 truncate text-sm text-gray-600">
                                     {latestMessage}
                                 </div>
                             </div>
