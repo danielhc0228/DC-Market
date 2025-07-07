@@ -120,24 +120,30 @@ export default async function Profile() {
     });
 
     return (
-        <div>
-            <h1>Welcome! {user?.username}!</h1>
-            <h2>
-                <StarIcon width={20} height={20} />
-                {averageReview === 0 ? "--" : averageReview.toFixed(2)}
-            </h2>
-            <button>Edit Profile</button>
+        <div className="space-y-8 p-4">
+            <div className="flex flex-col items-center gap-2">
+                <h1 className="text-3xl font-bold text-orange-500">Welcome, {user?.username}!</h1>
+                <div className="flex items-center gap-1 text-xl text-yellow-400">
+                    <StarIcon width={24} height={24} />
+                    <span>{averageReview === 0 ? "--" : averageReview.toFixed(2)}</span>
+                </div>
+                <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-2 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                    Edit Profile
+                </button>
+            </div>
+
+            {/* Bought Items */}
             <div>
-                Bought Items:
+                <h2 className="mb-2 text-xl font-semibold text-white">Bought Items</h2>
                 {boughtItems.length > 0 ? (
-                    <div>
+                    <div className="space-y-3">
                         {boughtItems.map((boughtItem) => (
                             <Link
                                 href={`/products/${boughtItem.id}`}
                                 key={boughtItem.id}
-                                className="flex gap-5"
+                                className="flex items-center gap-4 rounded-md bg-white p-3 shadow hover:bg-gray-50"
                             >
-                                <div className="relative size-28 overflow-hidden rounded-md">
+                                <div className="relative size-20 overflow-hidden rounded-md">
                                     <Image
                                         fill
                                         src={boughtItem.photo}
@@ -145,27 +151,29 @@ export default async function Profile() {
                                         alt={boughtItem.title}
                                     />
                                 </div>
-                                <div className="flex flex-col gap-1 *:text-white">
-                                    <span className="text-lg">{boughtItem.title}</span>
-                                </div>
+                                <span className="text-base font-medium text-gray-800">
+                                    {boughtItem.title}
+                                </span>
                             </Link>
                         ))}
                     </div>
                 ) : (
-                    "You haven't bought anything yet!"
+                    <p className="text-sm text-gray-300">You haven&apos;t bought anything yet!</p>
                 )}
             </div>
+
+            {/* Sold Items */}
             <div>
-                Sold Items:
+                <h2 className="mb-2 text-xl font-semibold text-white">Sold Items</h2>
                 {soldItems.length > 0 ? (
-                    <div>
+                    <div className="space-y-3">
                         {soldItems.map((soldItem) => (
                             <Link
                                 href={`/products/${soldItem.id}`}
                                 key={soldItem.id}
-                                className="flex gap-5"
+                                className="flex items-center gap-4 rounded-md bg-white p-3 shadow hover:bg-gray-50"
                             >
-                                <div className="relative size-28 overflow-hidden rounded-md">
+                                <div className="relative size-20 overflow-hidden rounded-md">
                                     <Image
                                         fill
                                         src={soldItem.photo}
@@ -173,55 +181,58 @@ export default async function Profile() {
                                         alt={soldItem.title}
                                     />
                                 </div>
-                                <div className="flex flex-col gap-1 *:text-white">
-                                    <span className="text-lg">{soldItem.title}</span>
-                                </div>
+                                <span className="text-base font-medium text-gray-800">
+                                    {soldItem.title}
+                                </span>
                             </Link>
                         ))}
                     </div>
                 ) : (
-                    "You haven't sold anything yet!"
+                    <p className="text-sm text-gray-300">You haven&apos;t sold anything yet!</p>
                 )}
             </div>
-            <div>
-                Reviews:
-                <div>
-                    <h3>Total: {receivedReview.totalReviews} reviews</h3>
-                    <div className="space-y-1">
-                        {fullSummary.map((r) => (
-                            <div key={r.star} className="flex items-center gap-2">
-                                <div className="flex w-23">
-                                    {Array.from({ length: r.star }).map((_, i) => (
-                                        <StarIcon
-                                            key={i}
-                                            width={13}
-                                            height={13}
-                                            className="text-blue-50"
-                                        />
-                                    ))}
-                                </div>
-                                <div className="relative h-3 w-full rounded bg-gray-200">
-                                    <div
-                                        className="absolute top-0 left-0 h-3 rounded bg-orange-400"
-                                        style={{
-                                            width: `${(r.count / receivedReview.totalReviews) * 100}%`,
-                                        }}
-                                    ></div>
-                                </div>
-                                <span className="w-6 text-sm">{r.count}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-            <Link href="/reviews">
-                <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
-                    See Comments
-                </button>
-            </Link>
 
+            {/* Reviews Summary */}
+            <div>
+                <h2 className="mb-2 text-xl font-semibold text-white">Reviews</h2>
+                <p className="mb-2 text-sm text-gray-300">
+                    Total: {receivedReview.totalReviews} reviews
+                </p>
+                <div className="space-y-1">
+                    {fullSummary.map((r) => (
+                        <div key={r.star} className="flex items-center gap-2">
+                            <div className="flex min-w-[80px]">
+                                {Array.from({ length: r.star }).map((_, i) => (
+                                    <StarIcon
+                                        key={i}
+                                        width={14}
+                                        height={14}
+                                        className="text-yellow-400"
+                                    />
+                                ))}
+                            </div>
+                            <div className="relative h-3 w-full rounded bg-gray-200">
+                                <div
+                                    className="absolute top-0 left-0 h-3 rounded bg-orange-400"
+                                    style={{
+                                        width: `${(r.count / receivedReview.totalReviews) * 100}%`,
+                                    }}
+                                ></div>
+                            </div>
+                            <span className="w-6 text-sm text-gray-100">{r.count}</span>
+                        </div>
+                    ))}
+                </div>
+                <Link href="/reviews">
+                    <button className="mt-3 rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-2 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                        See Comments
+                    </button>
+                </Link>
+            </div>
+
+            {/* Logout */}
             <form action={logOut}>
-                <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                <button className="w-full rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
                     Log out
                 </button>
             </form>
