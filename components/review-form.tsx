@@ -13,10 +13,7 @@ export default function ReviewForm({
     submitReview: (formData: FormData) => void;
 }) {
     const [rating, setRating] = useState(0);
-
-    const handleStarClick = (starValue: number) => {
-        setRating(starValue);
-    };
+    const [hoveredRating, setHoveredRating] = useState(0);
 
     return (
         <form
@@ -31,17 +28,22 @@ export default function ReviewForm({
             <input type="hidden" name="rating" value={rating} />
 
             <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                    <StarIcon
-                        key={star}
-                        width={24}
-                        height={24}
-                        className={`cursor-pointer ${
-                            star <= rating ? "text-yellow-400" : "text-gray-300"
-                        }`}
-                        onClick={() => handleStarClick(star)}
-                    />
-                ))}
+                {[1, 2, 3, 4, 5].map((star) => {
+                    const isActive = hoveredRating >= star || (!hoveredRating && rating >= star);
+                    return (
+                        <StarIcon
+                            key={star}
+                            width={24}
+                            height={24}
+                            className={`cursor-pointer transition-colors ${
+                                isActive ? "text-yellow-400" : "text-gray-300"
+                            }`}
+                            onClick={() => setRating(star)}
+                            onMouseEnter={() => setHoveredRating(star)}
+                            onMouseLeave={() => setHoveredRating(0)}
+                        />
+                    );
+                })}
             </div>
 
             <label className="block">
