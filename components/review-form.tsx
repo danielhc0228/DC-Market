@@ -26,7 +26,7 @@ export default function ReviewForm({
             <input type="hidden" name="productId" value={productId} />
             <input type="hidden" name="reviewerId" value={reviewerId} />
             <input type="hidden" name="rating" value={rating} />
-
+            <div className="text-center text-gray-400">The seller has sold the item to you!</div>
             <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((star) => {
                     const isActive = hoveredRating >= star || (!hoveredRating && rating >= star);

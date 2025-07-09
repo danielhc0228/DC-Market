@@ -141,7 +141,7 @@ export default function ChatMessagesList({
                         submitReview={submitReview}
                     />
                 ) : isSold && isSeller ? (
-                    <div className="mx-auto text-gray-400">Item has been sold!</div>
+                    <div className="mx-auto text-gray-400">Your item has been sold!</div>
                 ) : null}
 
                 <form className="relative flex" onSubmit={onSubmit}>
