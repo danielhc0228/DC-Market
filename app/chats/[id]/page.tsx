@@ -116,6 +116,7 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
                 }}
                 isSeller={isSeller}
                 productId={chatRoom.product.id}
+                productTitle={chatRoom.product.title}
                 isSold={chatRoom.product.isSold}
             />
             <ChatMessagesList

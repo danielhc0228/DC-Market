@@ -10,27 +10,40 @@ interface ChatHeaderProps {
     isSeller: boolean;
     productId: number;
     isSold: boolean;
+    productTitle: string;
 }
 
-export default function ChatHeader({ otherUser, isSeller, productId, isSold }: ChatHeaderProps) {
+export default function ChatHeader({
+    otherUser,
+    isSeller,
+    productId,
+    isSold,
+    productTitle,
+}: ChatHeaderProps) {
     return (
         <div className="fixed top-0 left-0 z-10 flex w-full items-center justify-between border-b bg-white px-4 py-3 shadow-sm">
-            <Link href="/chat" className="text-orange-500 hover:text-orange-400">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="size-6"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 19.5L8.25 12l7.5-7.5"
-                    />
-                </svg>
-            </Link>
+            <div className="flex gap-3">
+                <Link href="/chat" className="text-orange-500 hover:text-orange-400">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className="size-6"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15.75 19.5L8.25 12l7.5-7.5"
+                        />
+                    </svg>
+                </Link>
+                <span className="block max-w-[200px] truncate text-xl font-semibold text-orange-400">
+                    {productTitle}
+                </span>
+            </div>
+
             <div className="flex items-center gap-3">
                 <Image
                     src={otherUser.avatar || "/avatar.png"}
