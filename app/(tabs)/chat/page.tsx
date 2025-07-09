@@ -34,6 +34,11 @@ export async function getChats() {
                 },
             },
             updated_at: true,
+            product: {
+                select: {
+                    title: true,
+                },
+            },
         },
         orderBy: {
             updated_at: "desc",
@@ -68,10 +73,15 @@ export default async function Chat() {
                             </div>
 
                             <div className="flex flex-col justify-center">
-                                <div className="text-lg font-semibold text-gray-900">
-                                    {otherUser?.username}
+                                <div className="flex flex-wrap items-center gap-3 text-lg font-semibold text-gray-900">
+                                    <span className="text-orange-500">{otherUser?.username}</span>
+                                    <span className="font-normal text-gray-400">|</span>
+                                    <span className="truncate text-gray-700">
+                                        {chat.product.title}
+                                    </span>
                                 </div>
-                                <div className="max-w-55 truncate text-sm text-gray-600">
+
+                                <div className="max-w-[250px] truncate text-sm text-gray-600">
                                     {latestMessage}
                                 </div>
                             </div>
