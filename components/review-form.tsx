@@ -1,5 +1,8 @@
 "use client";
 
+import { useState } from "react";
+import { StarIcon } from "@heroicons/react/24/solid";
+
 export default function ReviewForm({
     productId,
     reviewerId,
@@ -9,28 +12,43 @@ export default function ReviewForm({
     reviewerId: number;
     submitReview: (formData: FormData) => void;
 }) {
+    const [rating, setRating] = useState(0);
+
+    const handleStarClick = (starValue: number) => {
+        setRating(starValue);
+    };
+
     return (
-        <form action={submitReview}>
+        <form
+            action={(formData) => {
+                formData.set("rating", rating.toString());
+                submitReview(formData);
+            }}
+            className="space-y-3"
+        >
             <input type="hidden" name="productId" value={productId} />
             <input type="hidden" name="reviewerId" value={reviewerId} />
-            <label className="mb-1 block">
-                Rating:
-                <input
-                    type="number"
-                    name="rating"
-                    min="1"
-                    max="5"
-                    required
-                    className="ml-2 w-16 border p-1"
-                />
-            </label>
+            <input type="hidden" name="rating" value={rating} />
 
-            <label className="mb-2 block">
-                Comment:
+            <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <StarIcon
+                        key={star}
+                        width={24}
+                        height={24}
+                        className={`cursor-pointer ${
+                            star <= rating ? "text-yellow-400" : "text-gray-300"
+                        }`}
+                        onClick={() => handleStarClick(star)}
+                    />
+                ))}
+            </div>
+
+            <label className="block">
                 <textarea
                     name="comment"
                     required
-                    className="w-full border p-2"
+                    className="w-full rounded border p-2"
                     placeholder="Write your review..."
                 ></textarea>
             </label>
