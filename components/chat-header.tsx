@@ -4,6 +4,7 @@ import { updateSoldStatus } from "@/lib/tradeSeverActions";
 
 interface ChatHeaderProps {
     otherUser: {
+        buyerId: number;
         username: string;
         avatar: string | null;
     };
@@ -58,6 +59,7 @@ export default function ChatHeader({
                 !isSold ? (
                     <form action={updateSoldStatus}>
                         <input type="hidden" name="productId" value={productId} />
+                        <input type="hidden" name="buyerId" value={otherUser.buyerId} />
                         <button className="rounded-md bg-orange-500 px-3 py-1 text-sm text-white hover:bg-orange-400">
                             Mark as Sold
                         </button>

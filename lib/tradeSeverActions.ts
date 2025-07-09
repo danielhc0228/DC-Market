@@ -6,9 +6,10 @@ import getSession from "./session";
 
 export async function updateSoldStatus(formData: FormData) {
     const productId = Number(formData.get("productId"));
+    const buyerId = Number(formData.get("buyerId"));
     await db.product.update({
         where: { id: productId },
-        data: { isSold: true },
+        data: { isSold: true, buyerId: buyerId },
     });
 }
 

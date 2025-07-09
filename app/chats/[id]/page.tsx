@@ -111,6 +111,7 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
         <div>
             <ChatHeader
                 otherUser={{
+                    buyerId: otherUser.id, //buyerId as this will only be used when the seller clicks the sold button.
                     username: otherUser.username,
                     avatar: otherUser.avatar,
                 }}
