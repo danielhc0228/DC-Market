@@ -7,6 +7,7 @@ interface EditProfileFormProps {
     user: {
         username: string;
         email: string | null;
+        phone: string | null;
         avatar: string | null;
     };
 }
@@ -14,6 +15,7 @@ interface EditProfileFormProps {
 export default function EditProfileForm({ user }: EditProfileFormProps) {
     const [username, setUsername] = useState(user.username);
     const [email, setEmail] = useState(user.email ?? "");
+    const [phone, setPhone] = useState(user.phone ?? "");
     const [avatar, setAvatar] = useState<File | null>(null);
 
     return (
@@ -39,6 +41,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
                         type="file"
                         accept="image/*"
                         onChange={(e) => setAvatar(e.target.files?.[0] || null)}
+                        className="rounded-md border border-gray-300 p-2 text-black"
                     />
                 </div>
 
@@ -50,7 +53,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         required
-                        className="w-full rounded-md border p-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                        className="w-full rounded-md border border-gray-300 p-2 text-black focus:ring-2 focus:ring-orange-400 focus:outline-none"
                     />
                 </div>
 
@@ -61,7 +64,18 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full rounded-md border p-2 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                        className="w-full rounded-md border border-gray-300 p-2 text-black focus:border-orange-400 focus:ring-2 focus:ring-orange-400 focus:outline-none"
+                    />
+                </div>
+
+                <div>
+                    <label className="mb-1 block text-sm font-semibold text-gray-700">Phone</label>
+                    <input
+                        type="phone"
+                        name="phone"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="w-full rounded-md border border-gray-300 p-2 text-black focus:ring-2 focus:ring-orange-400 focus:outline-none"
                     />
                 </div>
 
