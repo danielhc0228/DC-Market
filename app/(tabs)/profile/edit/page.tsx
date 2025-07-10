@@ -8,6 +8,7 @@ export default async function EditProfilePage() {
     const user = await db.user.findUnique({
         where: { id: session.id },
         select: {
+            id: true,
             username: true,
             email: true,
             phone: true,

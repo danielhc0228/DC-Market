@@ -5,6 +5,7 @@ import Image from "next/image";
 
 interface EditProfileFormProps {
     user: {
+        id: number;
         username: string;
         email: string | null;
         phone: string | null;
@@ -28,6 +29,8 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
                     // handle submit logic
                 }}
             >
+                <input type="hidden" name="id" value={user.id} />
+
                 {/* Avatar Preview */}
                 <div className="flex items-center gap-4">
                     <Image
@@ -43,6 +46,7 @@ export default function EditProfileForm({ user }: EditProfileFormProps) {
                         onChange={(e) => setAvatar(e.target.files?.[0] || null)}
                         className="rounded-md border border-gray-300 p-2 text-black"
                     />
+                    <input type="hidden" name="originalAvatar" value={user.avatar || ""} />
                 </div>
 
                 {/* Username */}
