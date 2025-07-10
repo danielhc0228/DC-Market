@@ -3,7 +3,7 @@ import ChatRoomForm from "@/components/chat-room-form";
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToDollar } from "@/lib/utils";
-import { ArrowLeftIcon, UserIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, ArrowPathIcon, UserIcon } from "@heroicons/react/24/solid";
 import { revalidateTag, unstable_cache } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
@@ -120,11 +120,17 @@ export default async function ProductDetail(props: ProductDetailProps) {
                 <span className="text-xl font-semibold">${formatToDollar(product.price)}</span>
                 {isOwner ? (
                     <>
+                        <Link
+                            href={`/products/${id}/edit`}
+                            className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                        >
+                            Edit
+                        </Link>
                         <DeleteButton id={id} />
 
                         <form action={revalidate}>
-                            <button className="cursor-pointer rounded-md bg-red-500 px-5 py-2.5 font-semibold text-white hover:bg-red-400">
-                                Revalidate
+                            <button className="cursor-pointer bg-transparent px-5 py-2.5 font-semibold text-white">
+                                <ArrowPathIcon className="size-6" />
                             </button>
                         </form>
                     </>
