@@ -7,6 +7,9 @@ export default function EditProfile() {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [avatar, setAvatar] = useState<File | null>(null);
+    {
+        console.log(avatar);
+    }
 
     return (
         <div className="mx-auto max-w-xl px-6 py-10">
