@@ -127,9 +127,11 @@ export default async function Profile() {
                     <StarIcon width={24} height={24} />
                     <span>{averageReview === 0 ? "--" : averageReview.toFixed(2)}</span>
                 </div>
-                <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-2 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
-                    Edit Profile
-                </button>
+                <Link href={`/profile/edit`}>
+                    <button className="rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-2 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                        Edit Profile
+                    </button>
+                </Link>
             </div>
 
             {/* Bought Items */}
