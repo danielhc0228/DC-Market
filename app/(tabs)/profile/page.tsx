@@ -232,7 +232,7 @@ export default async function Profile() {
 
             {/* Logout */}
             <form action={logOut}>
-                <button className="w-full rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
+                <button className="mb-25 w-full rounded-2xl bg-gradient-to-r from-red-500 to-pink-500 px-6 py-3 font-semibold text-white shadow-md transition hover:brightness-110 focus:ring-4 focus:ring-pink-300 focus:outline-none">
                     Log out
                 </button>
             </form>
