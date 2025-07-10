@@ -10,6 +10,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CloseBackground from "@/components/close-background";
 import ChatRoomForm from "@/components/chat-room-form";
+import DeleteButton from "@/app/products/[id]/DeleteButton";
 
 async function getIsOwner(userId: number) {
     const session = await getSession();
@@ -99,12 +100,15 @@ export default async function Modal(props: ProductDetailProps) {
                     ${formatToDollar(product.price)}
                 </span>
                 {isOwner ? (
-                    <Link
-                        href={`/products/${id}/edit`}
-                        className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
-                    >
-                        Edit
-                    </Link>
+                    <div>
+                        <Link
+                            href={`/products/${id}/edit`}
+                            className="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-orange-600"
+                        >
+                            Edit
+                        </Link>
+                        <DeleteButton id={id} />
+                    </div>
                 ) : (
                     <ChatRoomForm productId={product.id} />
                 )}
