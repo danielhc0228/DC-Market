@@ -1,12 +1,13 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { formatToTimeAgo } from "@/lib/utils";
-import { EyeIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { unstable_cache } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import LikeButton from "@/components/like-button";
 import CommentInput from "@/components/comment-input";
+import Link from "next/link";
 
 async function getPost(id: number) {
     try {
@@ -139,6 +140,12 @@ export default async function PostDetail({ params }: { params: Promise<{ id: str
                 comments={post.comments}
                 user={post.user}
             />
+            <Link
+                href="/life"
+                className="fixed top-5 right-5 flex size-10 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-400"
+            >
+                <ArrowLeftIcon className="size-7" />
+            </Link>
         </div>
     );
 }
