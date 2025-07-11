@@ -1,3 +1,4 @@
+import { getSoldStatus } from "@/app/(tabs)/home/@modal/(..)products/[id]/page";
 import DeleteButton from "@/app/products/[id]/DeleteButton";
 import ChatRoomForm from "@/components/chat-room-form";
 import db from "@/lib/db";
@@ -79,6 +80,7 @@ export default async function ProductDetail(props: ProductDetailProps) {
     }
     // const product = await getProduct(id);
     const product = await getCachedProduct(id);
+    const status = await getSoldStatus(id);
     if (!product) {
         return notFound();
     }
@@ -134,6 +136,13 @@ export default async function ProductDetail(props: ProductDetailProps) {
                             </button>
                         </form>
                     </>
+                ) : status ? (
+                    <button
+                        disabled={true}
+                        className="cursor-not-allowed rounded-md bg-zinc-600 px-5 py-2.5 font-semibold text-white"
+                    >
+                        Sold
+                    </button>
                 ) : (
                     <ChatRoomForm productId={product.id} />
                 )}

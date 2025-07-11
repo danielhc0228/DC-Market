@@ -37,7 +37,7 @@ async function getProduct(id: number) {
     return product;
 }
 
-async function getSoldStatus(id: number) {
+export async function getSoldStatus(id: number) {
     const status = await db.product.findUnique({
         where: {
             id,
