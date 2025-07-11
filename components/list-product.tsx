@@ -25,7 +25,15 @@ export default function ListProduct({
                 <Image fill src={photo} className="object-cover" alt={title} />
             </div>
             <div className="flex flex-col gap-1 *:text-white">
-                <span className="text-lg">{isSold ? `[Sold] ${title}` : title}</span>
+                <span className="text-lg">
+                    {isSold ? (
+                        <>
+                            <span className="text-red-500">[Sold]</span> {title}
+                        </>
+                    ) : (
+                        title
+                    )}
+                </span>
                 <span className="text-sm text-neutral-500">
                     {formatToTimeAgo(created_at.toString())}
                 </span>
