@@ -8,16 +8,24 @@ interface ListProductProps {
     created_at: Date;
     photo: string;
     id: number;
+    isSold: boolean;
 }
 
-export default function ListProduct({ title, price, created_at, photo, id }: ListProductProps) {
+export default function ListProduct({
+    title,
+    price,
+    created_at,
+    photo,
+    id,
+    isSold,
+}: ListProductProps) {
     return (
         <Link href={`/products/${id}`} className="flex gap-5">
             <div className="relative size-28 overflow-hidden rounded-md">
                 <Image fill src={photo} className="object-cover" alt={title} />
             </div>
             <div className="flex flex-col gap-1 *:text-white">
-                <span className="text-lg">{title}</span>
+                <span className="text-lg">{isSold ? `[Sold] ${title}` : title}</span>
                 <span className="text-sm text-neutral-500">
                     {formatToTimeAgo(created_at.toString())}
                 </span>
