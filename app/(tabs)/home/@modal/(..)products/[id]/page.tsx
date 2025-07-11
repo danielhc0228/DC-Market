@@ -37,6 +37,19 @@ async function getProduct(id: number) {
     return product;
 }
 
+async function getSoldStatus(id: number) {
+    const status = await db.product.findUnique({
+        where: {
+            id,
+        },
+        select: {
+            isSold: true,
+        },
+    });
+
+    return status;
+}
+
 interface ProductDetailProps {
     params: Promise<{ id: string }>;
 }
@@ -49,6 +62,7 @@ export default async function Modal(props: ProductDetailProps) {
         return notFound();
     }
     const product = await getProduct(id);
+    const status = await getSoldStatus(id);
     if (!product) {
         return notFound();
     }
@@ -109,6 +123,13 @@ export default async function Modal(props: ProductDetailProps) {
                         </Link>
                         <DeleteButton id={id} />
                     </div>
+                ) : status ? (
+                    <button
+                        disabled={true}
+                        className="cursor-not-allowed rounded-md bg-zinc-600 px-5 py-2.5 font-semibold text-white"
+                    >
+                        Sold
+                    </button>
                 ) : (
                     <ChatRoomForm productId={product.id} />
                 )}
