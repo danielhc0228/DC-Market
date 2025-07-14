@@ -1,6 +1,6 @@
 import ProductList from "@/components/product-list";
 import db from "@/lib/db";
-import { PlusIcon } from "@heroicons/react/24/solid";
+import { ArrowPathIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { Prisma } from "@prisma/client";
 import { revalidatePath, unstable_cache } from "next/cache";
 import Link from "next/link";
@@ -48,7 +48,9 @@ export default async function Products() {
     return (
         <div>
             <form action={revalidate}>
-                <button>Revalidate</button>
+                <button className="cursor-pointer bg-transparent px-5 py-2.5 font-semibold text-white">
+                    <ArrowPathIcon className="size-6" />
+                </button>
             </form>
             <ProductList initialProducts={initialProducts} />
             <Link
