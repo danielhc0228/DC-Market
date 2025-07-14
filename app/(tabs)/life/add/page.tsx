@@ -4,6 +4,7 @@ import Input from "@/components/input";
 import { useActionState } from "react";
 import { uploadPost } from "./actions";
 import Button from "@/components/button";
+import Textarea from "@/components/textarea";
 
 export default function AddPost() {
     const [state, action] = useActionState(uploadPost, null);
@@ -31,11 +32,10 @@ export default function AddPost() {
                         <label htmlFor="description" className="mb-1 block text-sm font-medium">
                             Description
                         </label>
-                        <Input
+                        <Textarea
                             name="description"
                             required
                             placeholder="Write something..."
-                            type="text"
                             errors={state?.fieldErrors.description}
                         />
                     </div>
