@@ -6,6 +6,7 @@ import { PhotoIcon } from "@heroicons/react/24/solid";
 import { useActionState, useState } from "react";
 import { z } from "zod";
 import { uploadProduct } from "./actions";
+import Textarea from "@/components/textarea";
 
 const fileSchema = z.object({
     // checks whether the uploaded file is image file
@@ -91,9 +92,8 @@ export default function AddProduct() {
                     placeholder="Price"
                     errors={state?.fieldErrors.price}
                 />
-                <Input
+                <Textarea
                     name="description"
-                    type="text"
                     required
                     placeholder="Description"
                     errors={state?.fieldErrors.description}
