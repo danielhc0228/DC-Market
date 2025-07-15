@@ -1,5 +1,6 @@
 "use client";
 
+import { formatToTimeAgo } from "@/lib/utils";
 import { ChevronDownIcon, ChevronUpIcon, StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useState } from "react";
@@ -12,6 +13,7 @@ interface IReviews {
     };
     rating: number;
     comment: string;
+    created_at: Date;
 }
 
 export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
@@ -107,27 +109,31 @@ export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
             </div>
 
             {/* Review list */}
-            <div className="space-y-4">
+            <div className="space-y-6">
                 {filteredReviews.map((review) => (
                     <div
                         key={review.id}
-                        className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md"
+                        className="rounded-xl border border-gray-100 bg-white p-5 shadow transition-shadow hover:shadow-md"
                     >
-                        <div className="mb-2 flex items-center gap-3">
+                        <div className="flex items-start gap-4">
                             <Image
                                 width={48}
                                 height={48}
-                                src={
-                                    review.reviewer.avatar ? review.reviewer.avatar : "/avatar.png"
-                                }
+                                src={review.reviewer.avatar || "/avatar.png"}
                                 alt={review.reviewer.username}
-                                className="rounded-full"
+                                className="rounded-full border border-gray-200"
                             />
-                            <div>
-                                <div className="font-semibold text-gray-800">
-                                    {review.reviewer.username}
+                            <div className="flex flex-1 flex-col">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-base font-semibold text-gray-800">
+                                        {review.reviewer.username}
+                                    </span>
+                                    <span className="text-sm text-gray-400">
+                                        {formatToTimeAgo(`${review.created_at}`)}
+                                    </span>
                                 </div>
-                                <div className="flex items-center gap-0.5">
+
+                                <div className="mt-1 flex items-center gap-0.5">
                                     {Array.from({ length: review.rating }).map((_, i) => (
                                         <StarIcon key={i} className="size-4 text-yellow-400" />
                                     ))}
@@ -135,11 +141,17 @@ export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
                                         <StarIcon key={i} className="size-4 text-gray-300" />
                                     ))}
                                 </div>
-                            </div>
-                        </div>
 
-                        <div className="text-sm text-gray-700">
-                            {review.comment || <i>No comment provided.</i>}
+                                <p className="mt-3 text-sm leading-relaxed text-gray-700">
+                                    {review.comment ? (
+                                        review.comment
+                                    ) : (
+                                        <span className="text-gray-400 italic">
+                                            No comment provided.
+                                        </span>
+                                    )}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 ))}

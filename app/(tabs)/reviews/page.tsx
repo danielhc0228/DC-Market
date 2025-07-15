@@ -18,6 +18,7 @@ async function getReceivedReview() {
                     avatar: true,
                 },
             },
+            created_at: true,
         },
     });
 
