@@ -1,5 +1,8 @@
-import { ChevronDownIcon, StarIcon } from "@heroicons/react/24/solid";
+"use client";
+
+import { ChevronDownIcon, ChevronUpIcon, StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import { useState } from "react";
 
 interface IReviews {
     id: number;
@@ -12,22 +15,56 @@ interface IReviews {
 }
 
 export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
+    const [filteredReviews, setFilteredReviews] = useState(reviews);
+    const [filterRating, setFilterRating] = useState<number | null>(null);
+    const [sortOption, setSortOption] = useState<"highest" | "lowest" | null>(null);
+
+    const handleSort = (option: "highest" | "lowest") => {
+        setSortOption(option);
+        const sorted = [...filteredReviews];
+        sorted.sort((a, b) => (option === "highest" ? b.rating - a.rating : a.rating - b.rating));
+        setFilteredReviews(sorted);
+    };
+
+    const handleFilter = (rating: number | null) => {
+        setFilterRating(rating);
+        if (rating) {
+            setFilteredReviews(reviews.filter((r) => r.rating === rating));
+        } else {
+            setFilteredReviews(reviews);
+        }
+    };
+
     return (
         <div className="space-y-6 p-4">
             <h1 className="text-2xl font-bold text-orange-500">Received Reviews</h1>
             {/* Controls */}
             <div className="flex flex-wrap gap-2">
-                <button className="flex items-center gap-1 rounded-md border border-orange-300 bg-white px-3 py-1.5 text-sm text-orange-500 hover:bg-orange-50">
-                    Sort by <ChevronDownIcon className="size-4" />
+                <button
+                    onClick={() => handleSort(sortOption === "highest" ? "lowest" : "highest")}
+                    className="flex items-center gap-1 rounded-md border border-orange-300 bg-white px-3 py-1.5 text-sm text-orange-500 hover:bg-orange-50"
+                >
+                    {sortOption === "highest" ? (
+                        <>
+                            Sort by Highest <ChevronDownIcon className="size-4" />
+                        </>
+                    ) : (
+                        <>
+                            Sort by Lowest <ChevronUpIcon className="size-4" />
+                        </>
+                    )}
                 </button>
-                <button className="flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50">
-                    Show only <ChevronDownIcon className="size-4" />
+                <button
+                    onClick={() => handleFilter(filterRating === 5 ? null : 5)}
+                    className="flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                >
+                    ★★★★★
                 </button>
             </div>
 
             {/* Review list */}
             <div className="space-y-4">
-                {reviews.map((review) => (
+                {filteredReviews.map((review) => (
                     <div
                         key={review.id}
                         className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md"
