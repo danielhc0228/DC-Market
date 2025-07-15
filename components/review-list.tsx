@@ -1,7 +1,7 @@
 "use client";
 
 import { formatToTimeAgo } from "@/lib/utils";
-import { ChevronDownIcon, ChevronUpIcon, StarIcon } from "@heroicons/react/24/solid";
+import { StarIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -19,12 +19,30 @@ interface IReviews {
 export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
     const [filteredReviews, setFilteredReviews] = useState(reviews);
     const [filterRating, setFilterRating] = useState<number | null>(null);
-    const [sortOption, setSortOption] = useState<"highest" | "lowest" | null>(null);
+    const [sortOption, setSortOption] = useState<
+        "highest" | "lowest" | "newest" | "oldest" | undefined
+    >(undefined);
 
-    const handleSort = (option: "highest" | "lowest") => {
+    const handleSort = (option: "highest" | "lowest" | "newest" | "oldest") => {
         setSortOption(option);
+
         const sorted = [...filteredReviews];
-        sorted.sort((a, b) => (option === "highest" ? b.rating - a.rating : a.rating - b.rating));
+
+        sorted.sort((a, b) => {
+            switch (option) {
+                case "highest":
+                    return b.rating - a.rating;
+                case "lowest":
+                    return a.rating - b.rating;
+                case "newest":
+                    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+                case "oldest":
+                    return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+                default:
+                    return 0;
+            }
+        });
+
         setFilteredReviews(sorted);
     };
 
@@ -42,20 +60,22 @@ export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
             <h1 className="text-2xl font-bold text-orange-500">Received Reviews</h1>
             {/* Controls */}
             <div className="flex flex-wrap gap-2">
-                <button
-                    onClick={() => handleSort(sortOption === "highest" ? "lowest" : "highest")}
-                    className="flex items-center gap-1 rounded-md border border-orange-300 bg-white px-3 py-1.5 text-sm text-orange-500 hover:bg-orange-50"
-                >
-                    {sortOption === "highest" ? (
-                        <>
-                            Sort by Highest <ChevronDownIcon className="size-4" />
-                        </>
-                    ) : (
-                        <>
-                            Sort by Lowest <ChevronUpIcon className="size-4" />
-                        </>
-                    )}
-                </button>
+                <div className="inline-flex items-center gap-2">
+                    <select
+                        id="sort"
+                        value={sortOption}
+                        onChange={(e) =>
+                            handleSort(e.target.value as "highest" | "lowest" | "newest" | "oldest")
+                        }
+                        className="rounded-md border border-orange-300 bg-white px-3 py-1.5 text-sm text-orange-500 shadow-sm transition hover:bg-orange-50 focus:border-orange-400 focus:ring-1 focus:ring-orange-400 focus:outline-none"
+                    >
+                        <option value="highest">Rating: Highest to Lowest</option>
+                        <option value="lowest">Rating: Lowest to Highest</option>
+                        <option value="newest">Date: Newest First</option>
+                        <option value="oldest">Date: Oldest First</option>
+                    </select>
+                </div>
+
                 <button
                     onClick={() => handleFilter(filterRating === 5 ? null : 5)}
                     className={`flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
