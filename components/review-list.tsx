@@ -56,9 +56,53 @@ export default function ReviewList({ reviews }: { reviews: IReviews[] }) {
                 </button>
                 <button
                     onClick={() => handleFilter(filterRating === 5 ? null : 5)}
-                    className="flex items-center gap-1 rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-50"
+                    className={`flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
+                        filterRating === 5
+                            ? "border-orange-500 bg-orange-100 text-orange-600"
+                            : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
                 >
                     ★★★★★
+                </button>
+                <button
+                    onClick={() => handleFilter(filterRating === 4 ? null : 4)}
+                    className={`flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
+                        filterRating === 4
+                            ? "border-orange-500 bg-orange-100 text-orange-600"
+                            : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                    ★★★★
+                </button>
+                <button
+                    onClick={() => handleFilter(filterRating === 3 ? null : 3)}
+                    className={`flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
+                        filterRating === 3
+                            ? "border-orange-500 bg-orange-100 text-orange-600"
+                            : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                    ★★★
+                </button>
+                <button
+                    onClick={() => handleFilter(filterRating === 2 ? null : 2)}
+                    className={`flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
+                        filterRating === 2
+                            ? "border-orange-500 bg-orange-100 text-orange-600"
+                            : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                    ★★
+                </button>
+                <button
+                    onClick={() => handleFilter(filterRating === 1 ? null : 1)}
+                    className={`flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
+                        filterRating === 1
+                            ? "border-orange-500 bg-orange-100 text-orange-600"
+                            : "border-gray-300 bg-white text-gray-600 hover:bg-gray-50"
+                    }`}
+                >
+                    ★
                 </button>
             </div>
 
