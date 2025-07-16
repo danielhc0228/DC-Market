@@ -1,9 +1,7 @@
-import ProductList from "@/components/product-list";
+import ProductWrapper from "@/components/product-wrapper";
 import db from "@/lib/db";
-import { ArrowPathIcon, PlusIcon } from "@heroicons/react/24/solid";
 import { Prisma } from "@prisma/client";
 import { revalidatePath, unstable_cache } from "next/cache";
-import Link from "next/link";
 
 // this function uses cache to store data from db and allow it to be used without requesting to db again.
 // 1st param: function to bring data
@@ -25,7 +23,7 @@ async function getInitialProducts() {
             id: true,
             isSold: true,
         },
-        take: 1,
+        // take: 1,
         orderBy: {
             created_at: "desc",
         },
@@ -40,28 +38,10 @@ export const metadata = {
 export type InitialProducts = Prisma.PromiseReturnType<typeof getInitialProducts>;
 
 export default async function Products() {
+    const initialProducts = await getCachedProducts();
     const revalidate = async () => {
         "use server";
         revalidatePath("/home"); //it refreshes and gets new data for the WHOLE page. Bad if you only want to get new data for some.
     };
-    const initialProducts = await getCachedProducts();
-    return (
-        <div>
-            <div className="mt-5 flex gap-2">
-                <form action={revalidate}>
-                    <button className="cursor-pointer bg-transparent px-5 py-2.5 font-semibold text-white">
-                        <ArrowPathIcon className="size-6" />
-                    </button>
-                </form>
-            </div>
-
-            <ProductList initialProducts={initialProducts} />
-            <Link
-                href="/home/add"
-                className="fixed right-8 bottom-24 flex size-16 items-center justify-center rounded-full bg-orange-500 text-white transition-colors hover:bg-orange-400"
-            >
-                <PlusIcon className="size-10" />
-            </Link>
-        </div>
-    );
+    return <ProductWrapper initialProducts={initialProducts} revalidate={revalidate} />;
 }

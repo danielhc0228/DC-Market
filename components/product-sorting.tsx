@@ -1,3 +1,5 @@
+"use client";
+
 import { InitialProducts } from "@/app/(tabs)/home/page";
 import { useState } from "react";
 
@@ -34,7 +36,7 @@ export default function ProductSorting({ initialProducts }: ProductListProps) {
         setFilteredProducts(sorted);
     };
     return (
-        <div>
+        <div className="flex gap-2">
             <select
                 id="sort"
                 value={sortOption}

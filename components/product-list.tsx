@@ -16,6 +16,8 @@ export default function ProductList({ initialProducts }: ProductListProps) {
     const [isLastPage, setIsLastPage] = useState(false);
 
     const trigger = useRef<HTMLSpanElement>(null); // connects span element
+    const productsRef = useRef(products);
+
     useEffect(() => {
         const observer = new IntersectionObserver(
             async (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
@@ -26,11 +28,17 @@ export default function ProductList({ initialProducts }: ProductListProps) {
                     setIsLoading(true);
                     const newProducts = await getMoreProducts(page + 1);
                     if (newProducts.length !== 0) {
+                        const uniqueNewProducts = newProducts.filter(
+                            (newItem) =>
+                                !productsRef.current.some((existing) => existing.id === newItem.id),
+                        );
+
                         setPage((prev) => prev + 1);
-                        setProducts((prev) => [...prev, ...newProducts]);
+                        setProducts((prev) => [...prev, ...uniqueNewProducts]);
                     } else {
                         setIsLastPage(true);
                     }
+
                     setIsLoading(false);
                 }
             },
@@ -46,6 +54,12 @@ export default function ProductList({ initialProducts }: ProductListProps) {
             observer.disconnect();
         };
     }, [page]); //observing begins everytime page value is changed, this allows infinite scrolling
+
+    useEffect(() => {
+        setProducts(initialProducts);
+        setPage(0);
+        setIsLastPage(false);
+    }, [initialProducts]);
 
     return (
         <div className="flex flex-col gap-5 p-5">
