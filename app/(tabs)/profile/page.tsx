@@ -60,6 +60,10 @@ async function getSoldItems() {
             userId: session.id,
             isSold: true,
         },
+        orderBy: {
+            updated_at: "desc",
+        },
+        take: 2,
         select: {
             id: true,
             title: true,
@@ -77,6 +81,10 @@ async function getBoughtItems() {
             buyerId: session.id,
             isSold: true,
         },
+        orderBy: {
+            updated_at: "desc",
+        },
+        take: 2,
         select: {
             id: true,
             title: true,
@@ -158,6 +166,15 @@ export default async function Profile() {
                                 </span>
                             </Link>
                         ))}
+                        {/* Link to full bought items page */}
+                        <div className="mt-2 text-right">
+                            <Link
+                                href="/profile/bought"
+                                className="text-sm text-orange-500 hover:underline"
+                            >
+                                View all bought items →
+                            </Link>
+                        </div>
                     </div>
                 ) : (
                     <p className="text-sm text-gray-300">You haven&apos;t bought anything yet!</p>
@@ -188,6 +205,15 @@ export default async function Profile() {
                                 </span>
                             </Link>
                         ))}
+                        {/* Link to full sold items page */}
+                        <div className="mt-2 text-right">
+                            <Link
+                                href="/profile/sold"
+                                className="text-sm text-orange-500 hover:underline"
+                            >
+                                View all sold items →
+                            </Link>
+                        </div>
                     </div>
                 ) : (
                     <p className="text-sm text-gray-300">You haven&apos;t sold anything yet!</p>
