@@ -3,7 +3,7 @@ import getSession from "@/lib/session";
 import Image from "next/image";
 import Link from "next/link";
 
-export async function getChats() {
+async function getChats() {
     const session = await getSession(); // get logged-in user
 
     const chatRooms = await db.chatRoom.findMany({
