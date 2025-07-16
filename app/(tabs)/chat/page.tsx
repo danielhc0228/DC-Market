@@ -48,14 +48,23 @@ async function getChats() {
     return chatRooms;
 }
 
+type ChatRoomPreview = {
+    id: number | string;
+    users: { id: number; username: string; avatar: string | null }[];
+    messages: { payload: string; created_at: Date }[];
+    updated_at: Date;
+    product: { title: string };
+};
+
 export default async function Chat() {
     const chats = await getChats();
     const session = await getSession();
+
     return (
         <div className="flex flex-col gap-[5px] p-4">
             <h1 className="mb-6 text-2xl text-amber-50">Chats</h1>
 
-            {chats.map((chat) => {
+            {chats.map((chat: ChatRoomPreview) => {
                 const otherUser = chat.users.find((user) => user.id !== session.id!);
                 const latestMessage = chat.messages[0]?.payload ?? "No messages yet";
 
