@@ -51,7 +51,7 @@ export async function getSoldStatus(id: number) {
 }
 
 interface ProductDetailProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default async function Modal(props: ProductDetailProps) {

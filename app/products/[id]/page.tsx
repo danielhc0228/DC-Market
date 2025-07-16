@@ -67,7 +67,7 @@ export async function generateMetadata(props: ProductDetailProps) {
 }
 
 interface ProductDetailProps {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }
 
 export default async function ProductDetail(props: ProductDetailProps) {
