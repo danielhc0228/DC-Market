@@ -19,7 +19,7 @@ async function getProduct(id: number) {
 }
 
 interface ProductDetailProps {
-    params: Promise<{ id: string }>;
+    params: { id: string };
 }
 
 export default async function EditPage(props: ProductDetailProps) {

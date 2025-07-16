@@ -94,7 +94,7 @@ async function getCachedLikeStatus(postId: number) {
     return cachedOperation(postId, userId!);
 }
 
-export default async function PostDetail({ params }: { params: Promise<{ id: string }> }) {
+export default async function PostDetail({ params }: { params: { id: string } }) {
     const param = await params;
     const id = Number(param.id);
 
