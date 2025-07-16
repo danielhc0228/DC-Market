@@ -53,7 +53,7 @@ async function getReceivedReview() {
     return { reviews, totalReviews, starSummary };
 }
 
-async function getSoldItems() {
+export async function getSoldItems() {
     const session = await getSession();
     const soldItems = await db.product.findMany({
         where: {
@@ -74,7 +74,7 @@ async function getSoldItems() {
     return soldItems;
 }
 
-async function getBoughtItems() {
+export async function getBoughtItems() {
     const session = await getSession();
     const boughtItems = await db.product.findMany({
         where: {
