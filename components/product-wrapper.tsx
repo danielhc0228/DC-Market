@@ -16,14 +16,17 @@ export default function ProductWrapper({ initialProducts, revalidate }: ProductW
     const [sortOption, setSortOption] = useState<
         "highest" | "lowest" | "newest" | "oldest" | undefined
     >(undefined);
+    const [showSoldOnly, setShowSoldOnly] = useState(false);
 
-    const handleSort = (option: "highest" | "lowest" | "newest" | "oldest") => {
-        setSortOption(option);
+    const applySortAndFilter = (
+        products: InitialProducts,
+        sort: "highest" | "lowest" | "newest" | "oldest" | undefined,
+        soldOnly: boolean,
+    ) => {
+        const filtered = soldOnly ? products.filter((p) => p.isSold) : products;
 
-        const sorted = [...filteredProducts];
-
-        sorted.sort((a, b) => {
-            switch (option) {
+        filtered.sort((a, b) => {
+            switch (sort) {
                 case "highest":
                     return b.price - a.price;
                 case "lowest":
@@ -37,8 +40,22 @@ export default function ProductWrapper({ initialProducts, revalidate }: ProductW
             }
         });
 
+        return filtered;
+    };
+
+    const handleSort = (option: "highest" | "lowest" | "newest" | "oldest") => {
+        setSortOption(option);
+        const sorted = applySortAndFilter(initialProducts, option, showSoldOnly);
         setFilteredProducts(sorted);
     };
+
+    const toggleSoldFilter = () => {
+        const nextSoldOnly = !showSoldOnly;
+        setShowSoldOnly(nextSoldOnly);
+        const sorted = applySortAndFilter(initialProducts, sortOption, nextSoldOnly);
+        setFilteredProducts(sorted);
+    };
+
     return (
         <div>
             <div className="mt-5 flex gap-2">
@@ -62,7 +79,12 @@ export default function ProductWrapper({ initialProducts, revalidate }: ProductW
                         <option value="oldest">Date: Oldest First</option>
                     </select>
                     <button
-                        className={`flex cursor-pointer items-center gap-1 rounded-md border px-3 py-1.5 text-sm`}
+                        onClick={toggleSoldFilter}
+                        className={`flex cursor-pointer items-center gap-1 rounded-md border px-3 py-1.5 text-sm ${
+                            showSoldOnly
+                                ? "border-orange-300 bg-orange-100 text-orange-600"
+                                : "bg-white text-gray-600"
+                        }`}
                     >
                         Sold
                     </button>

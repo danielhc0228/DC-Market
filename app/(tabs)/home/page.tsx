@@ -27,6 +27,9 @@ async function getInitialProducts() {
         orderBy: {
             created_at: "desc",
         },
+        where: {
+            isSold: true,
+        },
     });
     return products;
 }
