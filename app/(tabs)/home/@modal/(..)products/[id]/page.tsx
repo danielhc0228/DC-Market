@@ -77,7 +77,7 @@ export default async function Modal(props: ProductDetailProps) {
 
             {/* Image Section */}
             <div className="relative aspect-square w-full overflow-hidden rounded-t-xl">
-                <Image fill src={product.photo} alt={product.title} className="object-cover" />
+                <Image fill src={product.photo} alt={product.title} className="object-contain" />
             </div>
 
             {/* User Info */}

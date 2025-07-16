@@ -157,7 +157,7 @@ export default async function Profile() {
                                     <Image
                                         fill
                                         src={boughtItem.photo}
-                                        className="object-cover"
+                                        className="object-contain"
                                         alt={boughtItem.title}
                                     />
                                 </div>
