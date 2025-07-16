@@ -47,11 +47,14 @@ export default async function Products() {
     const initialProducts = await getCachedProducts();
     return (
         <div>
-            <form action={revalidate}>
-                <button className="cursor-pointer bg-transparent px-5 py-2.5 font-semibold text-white">
-                    <ArrowPathIcon className="size-6" />
-                </button>
-            </form>
+            <div className="mt-5 flex gap-2">
+                <form action={revalidate}>
+                    <button className="cursor-pointer bg-transparent px-5 py-2.5 font-semibold text-white">
+                        <ArrowPathIcon className="size-6" />
+                    </button>
+                </form>
+            </div>
+
             <ProductList initialProducts={initialProducts} />
             <Link
                 href="/home/add"
