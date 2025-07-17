@@ -21,7 +21,10 @@ async function getPosts() {
             },
         },
     });
-    return posts;
+    return posts.map((post) => ({
+        ...post,
+        created_at: post.created_at.toISOString(), // Make it serializable
+    }));
 }
 
 export const metadata = {
@@ -49,7 +52,7 @@ export default async function Life() {
                     <p>{post.description}</p>
                     <div className="flex items-center justify-between text-sm">
                         <div className="flex items-center gap-4">
-                            <span>{formatToTimeAgo(post.created_at.toString())}</span>
+                            <span>{formatToTimeAgo(post.created_at)}</span>
                             <span>·</span>
                             <span>Views {post.views}</span>
                         </div>
