@@ -28,10 +28,20 @@ export default function ProductList({ initialProducts }: ProductListProps) {
                     setIsLoading(true);
                     const newProducts = await getMoreProducts(page + 1);
                     if (newProducts.length !== 0) {
-                        const uniqueNewProducts = newProducts.filter(
-                            (newItem) =>
-                                !productsRef.current.some((existing) => existing.id === newItem.id),
-                        );
+                        const uniqueNewProducts = newProducts
+                            .map((p) => ({
+                                ...p,
+                                created_at:
+                                    typeof p.created_at === "string"
+                                        ? p.created_at
+                                        : p.created_at.toISOString(),
+                            }))
+                            .filter(
+                                (newItem) =>
+                                    !productsRef.current.some(
+                                        (existing) => existing.id === newItem.id,
+                                    ),
+                            );
 
                         setPage((prev) => prev + 1);
                         setProducts((prev) => [...prev, ...uniqueNewProducts]);

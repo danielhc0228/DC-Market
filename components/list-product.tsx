@@ -5,7 +5,7 @@ import Link from "next/link";
 interface ListProductProps {
     title: string;
     price: number;
-    created_at: Date;
+    created_at: string;
     photo: string;
     id: number;
     isSold: boolean;
@@ -34,9 +34,7 @@ export default function ListProduct({
                         title
                     )}
                 </span>
-                <span className="text-sm text-neutral-500">
-                    {formatToTimeAgo(created_at.toString())}
-                </span>
+                <span className="text-sm text-neutral-500">{formatToTimeAgo(created_at)}</span>
                 <span className="text-lg font-semibold">${formatToDollar(price)}</span>
             </div>
         </Link>
