@@ -25,7 +25,7 @@ export default function ListProduct({
                 <Image fill src={photo} className="object-contain" alt={title} />
             </div>
             <div className="flex flex-col gap-1 *:text-white">
-                <span className="text-lg">
+                <span className="max-w-[200px] truncate overflow-hidden text-lg whitespace-nowrap">
                     {isSold ? (
                         <>
                             <span className="text-red-500">[Sold]</span> {title}
@@ -34,6 +34,7 @@ export default function ListProduct({
                         title
                     )}
                 </span>
+
                 <span className="text-sm text-neutral-500">{formatToTimeAgo(created_at)}</span>
                 <span className="text-lg font-semibold">${formatToDollar(price)}</span>
             </div>
