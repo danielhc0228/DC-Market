@@ -31,7 +31,10 @@ async function getInitialProducts() {
         //     isSold: false,
         // },
     });
-    return products;
+    return products.map((product) => ({
+        ...product,
+        created_at: product.created_at.toISOString(), // Make it serializable
+    }));
 }
 
 export const metadata = {
