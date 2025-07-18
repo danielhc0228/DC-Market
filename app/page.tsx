@@ -12,6 +12,7 @@ export default function Home() {
                     height={108}
                     alt={"Logo"}
                     className="object-cover"
+                    unoptimized
                 />
                 <h2 className="text-2xl">Welcome to DC Market!</h2>
             </div>
