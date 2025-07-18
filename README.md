@@ -2,6 +2,9 @@
 
 A full-featured marketplace web application for trading items with 1:1 chat, real-time interactions, and user-driven content — built with a modern TypeScript/React stack.
 
+
+WARNING: Add product is currently unavailable as no online storage is set!!!
+
 ---
 
 ## 🛠️ Tech Stack
